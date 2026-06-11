@@ -29,6 +29,7 @@ gpg -c keys.txt
 rm keys.txt
 ```
 ```
+# fast check in
 conda activate ai-giin
 source <(gpg -dq keys.txt.gpg)
 ```
