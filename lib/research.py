@@ -48,12 +48,18 @@ class ResearchResult:
 
 
 def _tool_catalog(tools: dict) -> str:
-    lines = [f"- {ANALYZE}: run a Python data-analysis/visualization task "
-             f"(arguments: {{\"request\": \"...\"}}).",
-             f"- {FINALIZE}: finish this research "
-             f"(arguments: {{\"summary\": \"one or two sentences\"}})."]
+    lines = [
+        f'- {ANALYZE}: run a Python data-analysis/visualization task. '
+        f'ARGUMENTS {{"request": <str> what to analyze or plot, in words}}',
+        f'- {FINALIZE}: finish this research and report the result. '
+        f'ARGUMENTS {{"summary": <str> one or two sentences on what was found}}',
+    ]
     for name, tool in tools.items():
-        lines.append(f"- {name}: {tool.description}")
+        arg_hint = ", ".join(
+            f'"{p["name"]}": <{p["type"]}> {p["description"]}'
+            for p in tool.parameters
+        ) or "(no arguments)"
+        lines.append(f"- {name}: {tool.description} ARGUMENTS {{{arg_hint}}}")
     return "\n".join(lines)
 
 
@@ -76,8 +82,9 @@ def run_research(
     system = (
         "You are an AI legislator conducting evidence research. Each turn, choose "
         "exactly one tool and respond ONLY as:\n"
-        "ACTION: <tool name>\nARGUMENTS: <a JSON object>\n\n"
-        f"Available tools:\n{catalog}\n\n"
+        "ACTION: <tool name>\n"
+        "ARGUMENTS: <a JSON object whose keys are that tool's listed arguments>\n\n"
+        f"Available tools (with their arguments):\n{catalog}\n\n"
         f"Respond in {language}."
     )
     prompt = f"{stage_prompt}\n\nContext:\n{context}\n\nBegin your research."
