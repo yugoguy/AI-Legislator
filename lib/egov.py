@@ -1,27 +1,21 @@
-"""e-Gov 法令API (Japanese statutes) tool — API v2.
+"""e-Gov 法令API (Japanese statutes) tool — API v2, full-text search.
 
-Finds and fetches the text of Japanese laws/ordinances. Two modes:
-  - search (default): law-list search -> matching laws (id/number + name).
+Finds and fetches Japanese laws/ordinances. Two modes:
+  - search (default): FULL-TEXT keyword search over law CONTENT (not just names).
   - fetch: full text of a law by id/number.
 
-Why this was rewritten
-----------------------
-The previous version mixed API versions: it fetched via v2 but SEARCHED via
-`https://laws.e-gov.go.jp/api/1/keyword`, which 404s — the v1 `keyword` resource
-is not served on the v2 host (`laws.e-gov.go.jp` serves `/api/2/...`; the legacy
-v1 API lived on the `elaws.e-gov.go.jp` host). This version is ALL v2.
-
-API facts (verified June 2026):
-  - Base: https://laws.e-gov.go.jp/api/2  (v2 released 2025-03-19;
-    OpenAPI/Swagger UI at https://laws.e-gov.go.jp/api/2/swagger-ui).
-  - Search: GET /api/2/laws  (law list with name filtering).
+Endpoints (e-Gov 法令API v2; base https://laws.e-gov.go.jp/api/2):
+  - Search: GET /api/2/keyword   -> 全文検索 (searches law body text), JSON.
   - Fetch:  GET /api/2/law_data/{law_id_or_num}?response_format=json
             -> a JSON tree of {"tag","children",...} nodes.
 
-Both responses are parsed defensively (keys located by walking the tree) so the
-tool tolerates minor field-name differences across the v2 schema, and search
-results are additionally filtered locally by the query as a safety net. If the
-live schema differs, only the small parser helpers here need adjusting.
+History: the previous version searched law NAMES only (/api/2/laws?law_title=),
+which is 法令名検索, not キーワード検索. This version uses /api/2/keyword so a
+query matches text appearing inside the statutes, like the legacy v1 /keyword.
+
+The v2 list/keyword responses nest identity fields in separate objects
+(`law_info.law_id`, `revision_info.law_title`), so the parser reads those
+explicitly and also falls back to a generic tree walk if the shape differs.
 """
 
 from __future__ import annotations
@@ -32,10 +26,8 @@ import requests
 from tools import BaseTool
 
 _V2 = "https://laws.e-gov.go.jp/api/2"
-
-# Candidate field names for title / id, used by the defensive parser.
 _TITLE_KEYS = ("law_title", "LawName", "law_name", "title")
-_ID_KEYS = ("law_id", "LawId", "law_num", "law_no", "LawNo", "law_number")
+_ID_KEYS = ("law_id", "law_num", "LawId", "law_no", "LawNo", "law_number")
 
 
 class EgovLawTool(BaseTool):
@@ -43,13 +35,13 @@ class EgovLawTool(BaseTool):
         super().__init__(
             name="SearchEgovLaw",
             description=(
-                "Search and fetch Japanese statutes (e-Gov 法令, API v2). Provide "
-                "a Japanese `query` to find laws by name, or a `law_id` "
-                "(法令ID/法令番号) to fetch a law's full text."
+                "Full-text search of Japanese statutes (e-Gov 法令, API v2). "
+                "Provide a Japanese `query` to find laws whose CONTENT mentions "
+                "it, or a `law_id` (法令ID/法令番号) to fetch a law's full text."
             ),
             parameters=[
                 {"name": "query", "type": "str",
-                 "description": "Keyword to search law names (Japanese)."},
+                 "description": "Keyword searched within law text (Japanese)."},
                 {"name": "law_id", "type": "str",
                  "description": "Law id or number to fetch full text (optional)."},
             ],
@@ -61,7 +53,7 @@ class EgovLawTool(BaseTool):
             if law_id:
                 return self._format_text(self._fetch(law_id))
             if query:
-                return self._format_search(self._search(query), query)
+                return self._format_search(self._search(query))
             return "Provide either `query` or `law_id`."
         except requests.HTTPError as e:
             return f"e-Gov HTTP error: {e}"
@@ -71,8 +63,8 @@ class EgovLawTool(BaseTool):
     @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=4)
     def _search(self, query: str) -> dict:
         rsp = requests.get(
-            f"{_V2}/laws",
-            params={"law_title": query, "limit": self.max_results,
+            f"{_V2}/keyword",
+            params={"keyword": query, "limit": self.max_results,
                     "response_format": "json"},
             timeout=30,
         )
@@ -86,18 +78,20 @@ class EgovLawTool(BaseTool):
         rsp.raise_for_status()
         return rsp.json()
 
-    def _format_search(self, payload, query: str) -> str:
-        pairs = _find_law_pairs(payload)
-        # Local safety-net filter; fall back to all results if it empties out.
-        filtered = [(t, i) for (t, i) in pairs if query in t] or pairs
-        seen, out = set(), []
-        for title, lid in filtered:
-            if lid in seen:
-                continue
-            seen.add(lid)
-            out.append(f"[{lid}] {title}")
-            if len(out) >= self.max_results:
-                break
+    def _format_search(self, payload) -> str:
+        items = payload.get("items") or payload.get("laws") or []
+        out = []
+        for it in items[: self.max_results]:
+            info = it.get("law_info", it) if isinstance(it, dict) else {}
+            rev = it.get("revision_info", it) if isinstance(it, dict) else {}
+            lid = _first(info, _ID_KEYS) or _first(it, _ID_KEYS)
+            title = _first(rev, _TITLE_KEYS) or _first(it, _TITLE_KEYS)
+            snippet = _snippet(it)
+            if lid or title:
+                line = f"[{lid or '?'}] {title or '?'}"
+                out.append(line + (f" … {snippet}" if snippet else ""))
+        if not out:  # shape differed; fall back to a generic walk
+            out = [f"[{i}] {t}" for t, i in _walk_pairs(payload)][: self.max_results]
         return "\n".join(out) if out else "No matching laws found."
 
     @staticmethod
@@ -106,25 +100,40 @@ class EgovLawTool(BaseTool):
         return text[:4000] if text else "No law text returned."
 
 
-def _find_law_pairs(node, found=None) -> list[tuple[str, str]]:
-    """Walk the JSON and collect (title, id) pairs by candidate key names."""
+def _first(d, keys):
+    if isinstance(d, dict):
+        for k in keys:
+            if d.get(k):
+                return str(d[k])
+    return None
+
+
+def _snippet(item) -> str:
+    """Pull any sentence/highlight text the keyword hit returned."""
+    for k in ("sentence", "text", "snippet", "highlight", "matched_text"):
+        v = item.get(k) if isinstance(item, dict) else None
+        if isinstance(v, str) and v.strip():
+            return v.strip().replace("\n", " ")[:160]
+    return ""
+
+
+def _walk_pairs(node, found=None):
     if found is None:
         found = []
     if isinstance(node, dict):
-        title = next((node[k] for k in _TITLE_KEYS if node.get(k)), None)
-        lid = next((node[k] for k in _ID_KEYS if node.get(k)), None)
-        if title and lid:
-            found.append((str(title), str(lid)))
+        t = _first(node, _TITLE_KEYS)
+        i = _first(node, _ID_KEYS)
+        if t and i:
+            found.append((t, i))
         for v in node.values():
-            _find_law_pairs(v, found)
+            _walk_pairs(v, found)
     elif isinstance(node, list):
         for x in node:
-            _find_law_pairs(x, found)
+            _walk_pairs(x, found)
     return found
 
 
 def _collect_text(node) -> str:
-    """Recursively join text from the v2 law_data JSON tree."""
     if isinstance(node, str):
         return node + " "
     if isinstance(node, list):
