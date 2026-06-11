@@ -60,7 +60,7 @@ class ModelSpec:
     """One model selection: the model string plus its sampling knobs."""
 
     model: str
-    temperature: float = 0.75
+    temperature: float = 0.8
     max_tokens: int = 4096
 
 
@@ -98,8 +98,8 @@ class Config:
     verbose: bool = True
 
     # --- Target jurisdiction (drives topic generation) ---
-    region: str = "東京都"
-    region_level: str = "都道府県"   # e.g. 市区町村 / 都道府県 / 国
+    region: str = "横浜市"
+    region_level: str = "市区町村"   # e.g. 市区町村 / 都道府県 / 国
 
     # --- Models (per stage:role) and language (per stage) ---
     models: dict[str, ModelSpec] = field(default_factory=_default_models)
@@ -109,11 +109,11 @@ class Config:
     num_topics: int = 5              # initial high-level topic nodes
     research_selections: int = 20    # node selections in the research/G loop
     research_iters: int = 6          # conversation iterations per research execution
-    parliament_max: int = 5          # G nodes taken to parliament (others closed)
-    parliament_rounds: int = 3       # Q&A rounds per G
+    parliament_max: int = 3          # G nodes taken to parliament (others closed)
+    parliament_rounds: int = 6       # Q&A rounds per G
     refinement_selections: int = 8   # node selections in the refinement loop
     refinement_iters: int = 6        # conversation iterations per refinement research
-    writeup_max: int = 5             # active G nodes written up at most
+    writeup_max: int = 3             # active G nodes written up at most
 
     # --- Parallelism ---
     batch_size: int = 3              # parallel work units per batch (no node overlap)
