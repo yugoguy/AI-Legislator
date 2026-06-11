@@ -6,7 +6,7 @@ assembles the concrete Japanese data-source tools into the {name: tool} registry
 that research.py consumes, skipping any whose credentials are absent.
 
 Each concrete tool lives in its own file (estat.py, kokkai.py, egov.py,
-resas.py, webscrape.py) and subclasses BaseTool, mirroring the structure of
+webscrape.py) and subclasses BaseTool, mirroring the structure of
 Sakana's semantic_scholar.py.
 """
 
@@ -37,12 +37,8 @@ class BaseTool(ABC):
         raise NotImplementedError
 
 
-def build_default_tools(*, include_resas: bool = False) -> dict[str, "BaseTool"]:
-    """Assemble the data-source registry, skipping tools missing credentials.
-
-    `include_resas` is off by default because the RESAS API was discontinued on
-    2025-03-24 (see resas.py); enable only if you have a working endpoint/key.
-    """
+def build_default_tools() -> dict[str, "BaseTool"]:
+    """Assemble the data-source registry, skipping tools missing credentials."""
     from estat import EstatTool
     from kokkai import KokkaiTool
     from egov import EgovLawTool
@@ -59,14 +55,5 @@ def build_default_tools(*, include_resas: bool = False) -> dict[str, "BaseTool"]
     for cls in (KokkaiTool, EgovLawTool, WebScrapeTool):  # no key required
         t = cls()
         tools[t.name] = t
-
-    if include_resas:
-        from resas import ResasTool
-
-        if os.getenv("RESAS_API_KEY"):
-            t = ResasTool()
-            tools[t.name] = t
-        else:
-            warnings.warn("RESAS_API_KEY not set; RESAS tool disabled.")
 
     return tools
