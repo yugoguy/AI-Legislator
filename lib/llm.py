@@ -1,0 +1,237 @@
+"""Multi-provider LLM/VLM client with conversation history and usage tracking.
+
+Sources (three-way merge)
+-------------------------
+- AI Scientist v1 `ai_scientist/llm.py`: provider routing in create_client and
+  the (content, new_msg_history) threading of get_response_from_llm.
+- AI Scientist v2 `ai_scientist/vlm.py`: image -> base64 encoding and the
+  image-block message construction (vision support).
+- AI Scientist v2 `ai_scientist/utils/token_tracker.py`: per-model token
+  accounting (counts only; see "Changed / dropped").
+
+Reused
+------
+- create_client: pick an SDK client + model string from the model name.
+- get_response_from_llm: one turn that threads msg_history and returns
+  (content, new_msg_history).
+- encode_image_to_base64: PIL normalize -> JPEG -> base64.
+
+Added (in none of the sources individually)
+--------------------------------------------
+- Unified vision across BOTH providers. v1 had no images; v2's vlm.py built
+  OpenAI `image_url` blocks only. Here Anthropic receives base64 `image` source
+  blocks and OpenAI receives `image_url` blocks, from the same `image_paths`
+  argument, so any role can be vision-capable regardless of provider.
+
+Changed / dropped
+-----------------
+- Pricing tables removed. Per-token prices go stale and are deployment-specific;
+  the tracker records token COUNTS only. Cost, if needed, is computed upstream
+  from rates supplied via config. (token_tracker.py hardcoded 2024 USD prices.)
+- tiktoken removed: counts come from the API response usage, not local
+  re-tokenization.
+- Ensemble/batch helper (get_batch_responses_from_llm) dropped: unused here.
+- AVAILABLE_LLMS allow-list dropped: routing is by substring, so model strings
+  are chosen in config (a per-(stage, role) hyperparameter) rather than gated by
+  a list that ages out.
+- JSON extraction (extract_json_between_markers) lives in response.py now.
+
+Provider routing
+----------------
+"claude" in model -> Anthropic. Everything else -> an OpenAI-compatible client
+(OpenAI by default, or another endpoint via base_url in create_client). o1/o3
+reasoning models take the documented system-as-user / no-temperature path.
+"""
+
+from __future__ import annotations
+
+import base64
+import io
+import os
+
+import anthropic
+import backoff
+import openai
+from PIL import Image
+
+DEFAULT_MAX_TOKENS = 4096
+
+_RETRY_EXCEPTIONS = (
+    openai.RateLimitError,
+    openai.APITimeoutError,
+    anthropic.RateLimitError,
+    anthropic.APITimeoutError,
+)
+
+
+# --- image encoding ---------------------------------------------------------
+
+def encode_image_to_base64(image_path: str) -> str:
+    """Load an image, normalize to RGB JPEG, return base64 (no data: prefix)."""
+    with Image.open(image_path) as img:
+        rgb = img.convert("RGB")
+        buf = io.BytesIO()
+        rgb.save(buf, format="JPEG")
+    return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+
+# --- token tracking ---------------------------------------------------------
+
+class TokenTracker:
+    """Accumulate per-model input/output token counts across the run.
+
+    Counts only, no pricing (stale-prone; rates are supplied upstream). Reads
+    either the Anthropic (input_tokens/output_tokens) or OpenAI
+    (prompt_tokens/completion_tokens) usage shape off the raw response.
+    """
+
+    def __init__(self):
+        self.counts: dict[str, dict[str, int]] = {}
+
+    def record(self, model: str, response) -> None:
+        usage = getattr(response, "usage", None)
+        if usage is None:
+            return
+        in_tok = getattr(usage, "input_tokens", None)
+        out_tok = getattr(usage, "output_tokens", None)
+        if in_tok is None:  # OpenAI-shaped usage
+            in_tok = getattr(usage, "prompt_tokens", 0)
+            out_tok = getattr(usage, "completion_tokens", 0)
+        slot = self.counts.setdefault(model, {"input": 0, "output": 0, "calls": 0})
+        slot["input"] += int(in_tok or 0)
+        slot["output"] += int(out_tok or 0)
+        slot["calls"] += 1
+
+    def summary(self) -> dict:
+        return {m: dict(v) for m, v in self.counts.items()}
+
+
+tracker = TokenTracker()
+
+
+# --- client creation --------------------------------------------------------
+
+def create_client(model: str):
+    """Return (client, model_string) for `model`.
+
+    Extend with additional `elif` branches (base_url overrides) for other
+    OpenAI-compatible providers as needed.
+    """
+    if "claude" in model:
+        return anthropic.Anthropic(), model
+    if model.startswith("deepseek"):
+        return (
+            openai.OpenAI(
+                api_key=os.environ["DEEPSEEK_API_KEY"],
+                base_url="https://api.deepseek.com",
+            ),
+            model,
+        )
+    return openai.OpenAI(), model  # OpenAI / OpenAI-compatible default
+
+
+_CLIENT_CACHE: dict[str, tuple] = {}
+
+
+def client_for(model: str):
+    """create_client with per-model caching (one SDK client per model)."""
+    if model not in _CLIENT_CACHE:
+        _CLIENT_CACHE[model] = create_client(model)
+    return _CLIENT_CACHE[model]
+
+
+# --- single-turn call -------------------------------------------------------
+
+@backoff.on_exception(backoff.expo, _RETRY_EXCEPTIONS)
+def get_response_from_llm(
+    msg: str,
+    client,
+    model: str,
+    system_message: str,
+    *,
+    image_paths: list[str] | None = None,
+    msg_history: list[dict] | None = None,
+    temperature: float = 0.75,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+) -> tuple[str, list[dict]]:
+    """One turn against `model`, threading `msg_history`.
+
+    Returns (content, new_msg_history). `image_paths`, if given, attaches images
+    to THIS user turn in the calling provider's native block format. The returned
+    history is in that provider's format and should be passed back unchanged for
+    the next turn of the same conversation.
+    """
+    if msg_history is None:
+        msg_history = []
+    image_paths = image_paths or []
+
+    if "claude" in model:
+        content_blocks: list[dict] = [{"type": "text", "text": msg}]
+        for p in image_paths:
+            content_blocks.append(
+                {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": "image/jpeg",
+                        "data": encode_image_to_base64(p),
+                    },
+                }
+            )
+        new_msg_history = msg_history + [{"role": "user", "content": content_blocks}]
+        response = client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=system_message,
+            messages=new_msg_history,
+        )
+        content = "".join(b.text for b in response.content if b.type == "text")
+        new_msg_history = new_msg_history + [
+            {"role": "assistant", "content": [{"type": "text", "text": content}]}
+        ]
+
+    else:  # OpenAI-compatible
+        if image_paths:
+            user_content: list | str = [{"type": "text", "text": msg}]
+            for p in image_paths:
+                b64 = encode_image_to_base64(p)
+                user_content.append(
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{b64}",
+                            "detail": "low",
+                        },
+                    }
+                )
+        else:
+            user_content = msg
+        new_msg_history = msg_history + [{"role": "user", "content": user_content}]
+
+        if model.startswith("o1") or model.startswith("o3"):
+            # Reasoning models: system folded into the user role, no temperature.
+            messages = [{"role": "user", "content": system_message}, *new_msg_history]
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                max_completion_tokens=max_tokens,
+                n=1,
+                seed=0,
+            )
+        else:
+            messages = [{"role": "system", "content": system_message}, *new_msg_history]
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                n=1,
+                stop=None,
+                seed=0,
+            )
+        content = response.choices[0].message.content
+        new_msg_history = new_msg_history + [{"role": "assistant", "content": content}]
+
+    tracker.record(model, response)
+    return content, new_msg_history
