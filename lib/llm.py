@@ -179,6 +179,9 @@ def get_response_from_llm(
                 }
             )
         new_msg_history = msg_history + [{"role": "user", "content": content_blocks}]
+
+
+
         response = client.messages.create(
             model=model,
             max_tokens=max_tokens,
@@ -209,8 +212,8 @@ def get_response_from_llm(
             user_content = msg
         new_msg_history = msg_history + [{"role": "user", "content": user_content}]
 
-        if model.startswith("o1") or model.startswith("o3"):
-            # Reasoning models: system folded into the user role, no temperature.
+        if model.startswith(("gpt-5", "o1", "o3", "o4")):
+            # Newer/reasoning models: use max_completion_tokens; no temperature.
             messages = [{"role": "user", "content": system_message}, *new_msg_history]
             response = client.chat.completions.create(
                 model=model,
