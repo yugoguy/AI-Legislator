@@ -20,19 +20,38 @@ ROLES = ("legislator", "parliament", "coding", "writeup")
 # Reference list of model strings to choose from when configuring `models` below.
 # NOT enforced: routing is by substring (see llm.py) and the provider API is the
 # real validator, so any current model string works even if absent here. This is
-# just a convenience menu and will drift as providers release/retire models.
+# just a convenience menu. Verified current as of June 2026; it will drift.
 AVAILABLE_MODELS = (
-    # Anthropic (vision-capable)
-    "claude-3-5-sonnet-20241022",
-    "claude-3-5-haiku-20241022",
-    "claude-3-opus-20240229",
-    # OpenAI (vision-capable)
-    "gpt-4o",
-    "gpt-4o-mini",
-    "o1",
-    "o3-mini",
-    # OpenAI-compatible via base_url in llm.create_client
-    "deepseek-chat",
+    # Anthropic — Active, all vision-capable
+    "claude-opus-4-8",
+    "claude-sonnet-4-6",
+    "claude-haiku-4-5-20251001",
+    "claude-fable-5",
+
+    # OpenAI — GPT-5 family; USD / 1M tokens: input / cached input / output
+    "gpt-5-nano",        # $0.05 / $0.005 / $0.40
+    "gpt-5.4-nano",      # $0.20 / $0.02  / $1.25
+    "gpt-5-mini",        # $0.25 / $0.025 / $2.00
+    "gpt-5.4-mini",      # $0.75 / $0.075 / $4.50
+    "gpt-5",             # $1.25 / $0.125 / $10.00
+    "gpt-5.1",           # $1.25 / $0.125 / $10.00
+    "gpt-5.2",           # $1.75 / $0.175 / $14.00
+    "gpt-5.4",           # $2.50 / $0.25  / $15.00
+    "gpt-5.5",           # $5.00 / $0.50  / $30.00
+
+    # OpenAI — older GPT / vision-capable; USD / 1M tokens: input / cached input / output
+    "gpt-4.1-nano",      # $0.10 / $0.025 / $0.40
+    "gpt-4o-mini",       # $0.15 / $0.075 / $0.60
+    "gpt-4.1-mini",      # $0.40 / $0.10  / $1.60
+    "gpt-4.1",           # $2.00 / $0.50  / $8.00
+    "gpt-4o",            # $2.50 / $1.25  / $10.00
+
+    # OpenAI — reasoning models; USD / 1M tokens: input / cached input / output
+    "o1-mini",           # $1.10 / $0.55  / $4.40
+    "o3-mini",           # $1.10 / $0.55  / $4.40
+    "o4-mini",           # $1.10 / $0.275 / $4.40
+    "o3",                # $2.00 / $0.50  / $8.00
+    "o1",                # $15.00 / $7.50 / $60.00
 )
 
 
@@ -47,23 +66,16 @@ class ModelSpec:
 
 def _default_models() -> dict[str, ModelSpec]:
     """Default per-(stage, role) models, keyed "stage:role".
-
-    Model strings are placeholders chosen in config, NOT gated by an allow-list
-    (see llm.py). Swap freely; each should be vision-capable.
     """
-    legislator = ModelSpec("gpt-4o")
-    coding = ModelSpec("claude-3-5-sonnet-20241022")
-    parliament = ModelSpec("gpt-4o")
-    writeup = ModelSpec("gpt-4o")
     return {
-        "brainstorm:legislator": legislator,
-        "research:legislator": legislator,
-        "research:coding": coding,
-        "parliament:parliament": parliament,
-        "parliament:legislator": legislator,
-        "refinement:legislator": legislator,
-        "refinement:coding": coding,
-        "writeup:writeup": writeup,
+        "brainstorm:legislator": ModelSpec("gpt-5.4-mini"),
+        "research:legislator": ModelSpec("gpt-5.4-mini"),
+        "research:coding": ModelSpec("gpt-5.4-mini"),
+        "parliament:parliament": ModelSpec("gpt-5.4-mini"),
+        "parliament:legislator": ModelSpec("gpt-5.4-mini"),
+        "refinement:legislator": ModelSpec("gpt-5.4-mini"),
+        "refinement:coding": ModelSpec("gpt-5.4-mini"),
+        "writeup:writeup": ModelSpec("gpt-5.4-mini"),
     }
 
 
