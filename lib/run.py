@@ -70,7 +70,12 @@ def main() -> None:
     log = logging.getLogger("ai-legislator")
 
     cfg = build_config(debug)
-    tools = tools_mod.build_default_tools()          # RESAS off by default
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    prefix = "run_debug" if debug else "run"
+    cfg = replace(cfg, root_dir=f"./{prefix}_{timestamp}")
+
+    tools = tools_mod.build_default_tools()
     log.info("tools available: %s", ", ".join(sorted(tools)) or "(none)")
 
     research_select = make_research_select(seed=cfg.seed)
