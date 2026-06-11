@@ -4,7 +4,7 @@ conda create -n ai-giin python=3.11 -y
 conda activate ai-giin
 
 conda install -c conda-forge \
-  requests pandas python-dotenv beautifulsoup4 pillow pymupdf markdown weasyprint black -y
+  requests pandas python-dotenv beautifulsoup4 pillow pymupdf markdown weasyprint black matplotlib -y
 
 pip install openai anthropic backoff shutup
 ```
