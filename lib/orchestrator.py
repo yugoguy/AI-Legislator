@@ -27,7 +27,7 @@ from typing import Callable
 
 from config import Config
 from tree import Tree
-from node import (GNode, ResearchNode, TopicNode, G, RESEARCH, PARLIAMENT,
+from node import (GNode, ResearchNode, TopicNode, TOPIC, G, RESEARCH, PARLIAMENT,
                   ACTIVE, COMPLETE, INCOMPLETE)
 import legislator
 import research as research_mod
