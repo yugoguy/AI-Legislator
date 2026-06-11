@@ -41,7 +41,7 @@ def build_default_tools() -> dict[str, "BaseTool"]:
     """Assemble the data-source registry, skipping tools missing credentials."""
     from estat import EstatTool
     from kokkai import KokkaiTool
-    from egov import EgovLawTool
+    # from egov import EgovLawTool  # disabled: e-Gov tool currently not working
     from webscrape import WebScrapeTool
 
     tools: dict[str, BaseTool] = {}
@@ -52,7 +52,7 @@ def build_default_tools() -> dict[str, "BaseTool"]:
     else:
         warnings.warn("ESTAT_APP_ID not set; e-Stat tool disabled.")
 
-    for cls in (KokkaiTool, EgovLawTool, WebScrapeTool):  # no key required
+    for cls in (KokkaiTool, WebScrapeTool):  # EgovLawTool disabled
         t = cls()
         tools[t.name] = t
 
