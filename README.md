@@ -28,10 +28,26 @@ export ESTAT_APP_ID="..."
 gpg -c keys.txt
 rm keys.txt
 ```
+
 ```
 # fast check in
 conda activate ai-giin
 source <(gpg -dq keys.txt.gpg)
+```
+
+Clone
+```
+git clone https://github.com/yugoguy/AI-Legislator.git
+cp -r AI-Legislator/lib .
+rm -rf AI-Legislator
+```
+
+Run after tuning the lib/config file
+```
+python lib/run.py
+
+# for llm-free system debug
+python lib/debug_run.py
 ```
 
 End
