@@ -17,6 +17,24 @@ from dataclasses import dataclass, field
 STAGES = ("brainstorm", "research", "parliament", "refinement", "writeup")
 ROLES = ("legislator", "parliament", "coding", "writeup")
 
+# Reference list of model strings to choose from when configuring `models` below.
+# NOT enforced: routing is by substring (see llm.py) and the provider API is the
+# real validator, so any current model string works even if absent here. This is
+# just a convenience menu and will drift as providers release/retire models.
+AVAILABLE_MODELS = (
+    # Anthropic (vision-capable)
+    "claude-3-5-sonnet-20241022",
+    "claude-3-5-haiku-20241022",
+    "claude-3-opus-20240229",
+    # OpenAI (vision-capable)
+    "gpt-4o",
+    "gpt-4o-mini",
+    "o1",
+    "o3-mini",
+    # OpenAI-compatible via base_url in llm.create_client
+    "deepseek-chat",
+)
+
 
 @dataclass(frozen=True)
 class ModelSpec:
@@ -33,10 +51,10 @@ def _default_models() -> dict[str, ModelSpec]:
     Model strings are placeholders chosen in config, NOT gated by an allow-list
     (see llm.py). Swap freely; each should be vision-capable.
     """
-    legislator = ModelSpec("claude-3-5-sonnet-20241022")
+    legislator = ModelSpec("gpt-4o")
     coding = ModelSpec("claude-3-5-sonnet-20241022")
-    parliament = ModelSpec("claude-3-5-sonnet-20241022")
-    writeup = ModelSpec("claude-3-5-sonnet-20241022")
+    parliament = ModelSpec("gpt-4o")
+    writeup = ModelSpec("gpt-4o")
     return {
         "brainstorm:legislator": legislator,
         "research:legislator": legislator,
