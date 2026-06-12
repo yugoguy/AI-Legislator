@@ -115,13 +115,13 @@ class Config:
     # --- Stage sizes / iteration counts ---
     num_topics: int = 5              # initial high-level topic nodes
     g_per_topic: int = 2             # candidate 議案 spawned per topic at brainstorm
-    brainstorm_iters: int = 8        # research iterations per brainstorm grounding
-    research_selections: int = 30    # node selections in the research/G loop
-    research_iters: int = 8          # conversation iterations per research execution
+    brainstorm_iters: int = 4        # research iterations per brainstorm grounding
+    research_selections: int = 20    # node selections in the research/G loop
+    research_iters: int = 6          # conversation iterations per research execution
     parliament_max: int = 3          # G nodes taken to parliament (others closed)
-    parliament_rounds: int = 3       # Q&A rounds per G
-    refinement_selections: int = 10   # node selections in the refinement loop
-    refinement_iters: int = 8        # conversation iterations per refinement research
+    parliament_rounds: int = 6       # Q&A rounds per G
+    refinement_selections: int = 8   # node selections in the refinement loop
+    refinement_iters: int = 6        # conversation iterations per refinement research
     writeup_max: int = 3             # active G nodes written up at most
 
     # --- Selection policy (UCB over active 議案) ---
@@ -144,6 +144,16 @@ class Config:
     # this must be a search-capable model (e.g. "gpt-4o-mini-search-preview").
     web_search_model: str = "claude-haiku-4-5-20251001"
     web_search_max_results: int = 5
+
+    # --- Local-government data (SearchLocalGov bridge tool) ---
+    # Per-region local datasets (assembly bills/petitions + minutes). The bridge
+    # (local_data.py) reads this to decide availability and where to load from;
+    # a region-specific fetcher owns the data-structure details. "path" is a
+    # local data directory (downloaded dataset). Add regions as more are built.
+    local_sources: dict = field(default_factory=lambda: {
+        "横浜市": {"available": True, "path": "./data/yokohama_gikai_db"},
+    })
+    local_max_results: int = 10
 
     # --- Resource ceiling (advisory; enforced by the orchestrator) ---
     max_total_llm_calls: int = 0     # 0 = unlimited
