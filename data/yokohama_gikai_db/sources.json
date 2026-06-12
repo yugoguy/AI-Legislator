@@ -1,0 +1,228 @@
+[
+  {
+    "kind": "index",
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gian.html",
+    "status": 200,
+    "content_hash": "0610c169a8cbade0fd6df1fa586eaf955cb87df4cb2e0b17fa45c93dedc56e0b"
+  },
+  {
+    "kind": "session",
+    "title": "令和８年第２回定例会",
+    "year": 2026,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR08-2.html",
+    "status": 200,
+    "content_hash": "a411a29d7566f388793f9b59063470459a807b012fe9fee1a0cf7b11ba51d375",
+    "old_content_hash": null,
+    "records": 41,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和８年第１回定例会",
+    "year": 2026,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR08-1.html",
+    "status": 200,
+    "content_hash": "78c76a0bdbe28e96ea646b62df2da52daf7cc1d264831c614aeb7a33dda75354",
+    "old_content_hash": null,
+    "records": 103,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和７年第４回定例会",
+    "year": 2025,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR07-4.html",
+    "status": 200,
+    "content_hash": "4f6aa0b1799e94fdb404efa12a7238e5222e81142af3ba6a4dd5044357c08c4e",
+    "old_content_hash": null,
+    "records": 64,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和７年第３回定例会",
+    "year": 2025,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR07-3.html",
+    "status": 200,
+    "content_hash": "e6b63c37756708cb4696c08aeab51eee8cc8d3a966382852b7af6ffee87befcf",
+    "old_content_hash": null,
+    "records": 89,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和７年第２回定例会",
+    "year": 2025,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR07-2.html",
+    "status": 200,
+    "content_hash": "727aefabf21a5112d27b660bbb98337b57d1ea1854019050dd2721ade3ffc5d0",
+    "old_content_hash": null,
+    "records": 39,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和７年第１回定例会",
+    "year": 2025,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR07-1.html",
+    "status": 200,
+    "content_hash": "eeb3a7abfc0f7a455e0f961e8aefe4efbadf44de090a51e9ad3fbe9cab31c682",
+    "old_content_hash": null,
+    "records": 99,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和６年第４回定例会",
+    "year": 2024,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR06-4.html",
+    "status": 200,
+    "content_hash": "d869d28928a048fe261a514bfbf272af08987b0caab59e72bbc44f146d19ce63",
+    "old_content_hash": null,
+    "records": 47,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和６年第３回定例会",
+    "year": 2024,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR06-3.html",
+    "status": 200,
+    "content_hash": "5078e172baf6816a410b752d8e82ecc841833c3300b2f6918ef606e550640e97",
+    "old_content_hash": null,
+    "records": 85,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和６年第２回定例会",
+    "year": 2024,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gian6-2.html",
+    "status": 200,
+    "content_hash": "5c9ecb41c46502e7eec913fcda6d11d1c4f3f16acc564684f53cd81bdcf2469e",
+    "old_content_hash": null,
+    "records": 40,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和６年第１回定例会",
+    "year": 2024,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR06-1.html",
+    "status": 200,
+    "content_hash": "bf2c5d9abb59d3d140d5d93473dd6177c34882e908a97b086fd76430085d72db",
+    "old_content_hash": null,
+    "records": 119,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和５年第４回定例会",
+    "year": 2023,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gian5-4.html",
+    "status": 200,
+    "content_hash": "4df27e7a4ae27117f2c37386433abd6b2dea04288a26f5b1d39b0f56ce370174",
+    "old_content_hash": null,
+    "records": 55,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和５年第３回定例会",
+    "year": 2023,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR05-3.html",
+    "status": 200,
+    "content_hash": "6fc8665ba533afe87b81f4de25e2d4fee065047ecae07a04b976b9282d31728c",
+    "old_content_hash": null,
+    "records": 99,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和５年第１回臨時会",
+    "year": 2023,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR05-r1.html",
+    "status": 200,
+    "content_hash": "c1d088cbc2d8e1ff12c32bfcff6d70cc9e7d1770f20d85e230021d9e8a914a1a",
+    "old_content_hash": null,
+    "records": 4,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和５年第２回定例会",
+    "year": 2023,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianr5-2.html",
+    "status": 200,
+    "content_hash": "c5af1b24e816a4a34c485a2083ba87b92b6225dabf3be8abc86978b6a44946ed",
+    "old_content_hash": null,
+    "records": 46,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和５年第１回定例会",
+    "year": 2023,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR05-1.html",
+    "status": 200,
+    "content_hash": "71624c9184dce4420ff0d2f08048289d9ce620da60b4cd386c4dd03a926abdc4",
+    "old_content_hash": null,
+    "records": 80,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和４年第４回定例会",
+    "year": 2022,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR04-4.html",
+    "status": 200,
+    "content_hash": "ae4ed6620516de5a326a3a7b72ce9406ffe01abe6c8e042588bc57affb6ab8dc",
+    "old_content_hash": null,
+    "records": 55,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和４年第３回定例会",
+    "year": 2022,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR04-3.html",
+    "status": 200,
+    "content_hash": "f02be6253f0d52c3a09997fe5f3d4450799822e74de4343ebeaad1603b6d1385",
+    "old_content_hash": null,
+    "records": 69,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和４年第１回臨時会",
+    "year": 2022,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR04-r1.html",
+    "status": 200,
+    "content_hash": "1d22378fcb251ce0f3d5a3989b0b41d5407607f24c833e171f68e6ed92653da9",
+    "old_content_hash": null,
+    "records": 4,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和４年第２回定例会",
+    "year": 2022,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR04-2.html",
+    "status": 200,
+    "content_hash": "0d16dd3f6a734443ce1cd98347b5c1ee4872080398dad53b11156d8f7bef8d97",
+    "old_content_hash": null,
+    "records": 34,
+    "parse_status": "parsed_new"
+  },
+  {
+    "kind": "session",
+    "title": "令和４年第１回定例会",
+    "year": 2022,
+    "url": "https://www.city.yokohama.lg.jp/shikai/kiroku/kekka/gianR04-1.html",
+    "status": 200,
+    "content_hash": "62551c147e9ce917ed8bd81f3fbf18af34f9e627369d8f8426ccd71c89217a0c",
+    "old_content_hash": null,
+    "records": 77,
+    "parse_status": "parsed_new"
+  }
+]
