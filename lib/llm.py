@@ -238,3 +238,113 @@ def get_response_from_llm(
 
     tracker.record(model, response)
     return content, new_msg_history
+
+
+# --- native web search (provider server-side tool) --------------------------
+
+def web_search(
+    query: str,
+    model: str,
+    *,
+    max_results: int = 5,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+) -> tuple[bool, str, list[dict]]:
+    """Run one web search via the calling provider's server-side search tool.
+
+    Routes by model name (same convention as get_response_from_llm): a "claude"
+    model uses Anthropic's web_search_20250305 tool; anything else uses an
+    OpenAI chat-completions search model (web_search_options). Returns
+    (ok, text, sources) where sources is a list of {title, url} dicts. ok=False
+    means the search itself failed (provider error / no usable result), which the
+    research loop treats as a process failure, not evidence.
+
+    The executor model is configured independently (see config); for OpenAI it
+    must be a search-capable model string (e.g. gpt-4o-mini-search-preview).
+    """
+    client, model = client_for(model)
+    if "claude" in model:
+        return _web_search_anthropic(client, model, query, max_results, max_tokens)
+    return _web_search_openai(client, model, query, max_tokens)
+
+
+def _web_search_anthropic(client, model, query, max_results, max_tokens):
+    instruction = (
+        f"Search the web for: {query}\n\n"
+        "Report what you find as a concise list of the most relevant real pages, "
+        "each with its title, URL, and a one-line summary of what it contains. "
+        "Prefer official Japanese government / municipal sources."
+    )
+    try:
+        response = client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            messages=[{"role": "user", "content": instruction}],
+            tools=[{"type": "web_search_20250305", "name": "web_search",
+                    "max_uses": max_results}],
+        )
+    except Exception as e:                       # network / API failure
+        return False, f"Web search failed: {e}", []
+
+    tracker.record(model, response)
+    text_parts: list[str] = []
+    sources: list[dict] = []
+    searched = False
+    for block in response.content:
+        btype = getattr(block, "type", None)
+        if btype == "text":
+            text_parts.append(block.text)
+        elif btype == "web_search_tool_result":
+            searched = True
+            inner = getattr(block, "content", None)
+            # Error result is a single object with an error_code.
+            if isinstance(inner, dict) or getattr(inner, "type", "") == \
+                    "web_search_tool_result_error":
+                code = getattr(inner, "error_code", None) or (
+                    inner.get("error_code") if isinstance(inner, dict) else None)
+                return False, f"Web search error: {code or 'unknown'}", []
+            for item in (inner or []):
+                url = getattr(item, "url", None)
+                title = getattr(item, "title", None)
+                if url:
+                    sources.append({"title": title or "", "url": url})
+
+    if not searched and not sources:
+        return False, "Web search returned no results.", []
+    text = "\n".join(t for t in text_parts if t).strip()
+    listing = "\n".join(f"- {s['title']}: {s['url']}" for s in sources)
+    body = (text + ("\n\nSources:\n" + listing if listing else "")).strip()
+    return True, body or "Web search returned no usable text.", sources
+
+
+def _web_search_openai(client, model, query, max_tokens):
+    instruction = (
+        f"Search the web for: {query}\n\n"
+        "Report the most relevant real pages with title, URL, and a one-line "
+        "summary each. Prefer official Japanese government / municipal sources."
+    )
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": instruction}],
+            web_search_options={},
+            max_tokens=max_tokens,
+        )
+    except Exception as e:
+        return False, f"Web search failed: {e}", []
+
+    tracker.record(model, response)
+    msg = response.choices[0].message
+    text = msg.content or ""
+    sources: list[dict] = []
+    for ann in (getattr(msg, "annotations", None) or []):
+        if getattr(ann, "type", None) == "url_citation":
+            uc = getattr(ann, "url_citation", None)
+            url = getattr(uc, "url", None)
+            title = getattr(uc, "title", None)
+            if url:
+                sources.append({"title": title or "", "url": url})
+    if not text and not sources:
+        return False, "Web search returned no results.", []
+    listing = "\n".join(f"- {s['title']}: {s['url']}" for s in sources)
+    body = (text + ("\n\nSources:\n" + listing if listing else "")).strip()
+    return True, body, sources
