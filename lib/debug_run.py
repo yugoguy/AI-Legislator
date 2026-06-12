@@ -69,6 +69,7 @@ _SAMPLE_ARGS = {
     "SearchEStat": {"query": "高齢者 人口"},
     "SearchKokkai": {"query": "高齢化"},
     "SearchEgovLaw": {"query": "介護保険"},
+    "SearchWeb": {"query": "横浜市 高齢化"},
     "FetchWebPage": {"url": "https://www.bousai.go.jp/"},
 }
 
@@ -178,6 +179,14 @@ def _patch_llm() -> None:
     for mod in (legislator, research, parliament, data_agent, evaluator):
         mod.get_response_from_llm = fake_llm
         mod.client_for = fake_client
+    # SearchWeb delegates to llm.web_search (a real provider call); stub it so the
+    # debug smoke test needs no API key and no network for web search.
+    import websearch
+    websearch.web_search = lambda query, model, **kw: (
+        True,
+        f"(debug) results for {query}:\n- 横浜市 高齢化 統計: https://www.city.yokohama.lg.jp/",
+        [{"title": "横浜市 高齢化 統計", "url": "https://www.city.yokohama.lg.jp/"}],
+    )
 
 
 def _build_tools() -> dict:
