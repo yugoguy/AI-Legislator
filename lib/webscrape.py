@@ -19,7 +19,7 @@ import re
 import backoff
 import requests
 
-from tools import BaseTool
+from tools import BaseTool, ToolResult
 
 _UA = "AI-Legislator/0.1 (research; contact: operator)"
 _MAX_CHARS = 6000
@@ -40,16 +40,19 @@ class WebScrapeTool(BaseTool):
         )
         self.max_chars = max_chars
 
-    def use_tool(self, url: str = "") -> str:
+    def use_tool(self, url: str = "") -> ToolResult:
         if not url:
-            return "Provide a `url`."
+            return ToolResult(False, "Provide a `url`.")
         try:
             html = self._get(url)
         except requests.HTTPError as e:
-            return f"Fetch HTTP error: {e}"
+            return ToolResult(False, f"Fetch HTTP error (page not reached): {e}")
         except requests.RequestException as e:
-            return f"Fetch error: {e}"
-        return self._to_text(html)[: self.max_chars]
+            return ToolResult(False, f"Fetch error (page not reached): {e}")
+        text = self._to_text(html)[: self.max_chars]
+        if not text.strip():
+            return ToolResult(False, "Page fetched but contained no readable text.")
+        return ToolResult(True, text)
 
     @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=4)
     def _get(self, url: str) -> str:
