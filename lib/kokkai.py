@@ -48,24 +48,52 @@ class KokkaiTool(BaseTool):
                  since: str = "", until: str = "") -> str:
         if not (query or speaker):
             return "Provide at least `query` or `speaker`."
-        params = {
+        base = {
             "recordPacking": "json",
             "maximumRecords": self.max_results,
         }
-        if query:
-            params["any"] = query
         if speaker:
-            params["speaker"] = speaker
+            base["speaker"] = speaker
         if house:
-            params["nameOfHouse"] = house
+            base["nameOfHouse"] = house
         if since:
-            params["from"] = since
+            base["from"] = since
         if until:
-            params["until"] = until
+            base["until"] = until
         try:
-            return self._format(self._get(params))
+            return self._search_union(query, base)
         except requests.HTTPError as e:
             return f"Kokkai HTTP error: {e}"
+
+    def _search_union(self, query: str, base: dict) -> str:
+        """Search each whitespace-separated keyword separately and union results.
+
+        The `any` parameter ANDs multiple terms, which usually over-narrows to
+        zero hits. Splitting into one call per term and unioning (dedup by
+        speechID, capped at max_results) approximates an OR search. Speaker/house/
+        date filters in `base` apply to every sub-call.
+        """
+        terms = query.split() if query else [""]
+        if len(terms) <= 1:
+            params = dict(base)
+            if query:
+                params["any"] = query
+            return self._format_records(_kokkai_records(self._get(params)))
+        seen: set[str] = set()
+        merged: list[dict] = []
+        for term in terms:
+            params = dict(base, any=term)
+            for r in _kokkai_records(self._get(params)):
+                sid = r.get("speechID", "")
+                if sid and sid in seen:
+                    continue
+                seen.add(sid)
+                merged.append(r)
+                if len(merged) >= self.max_results:
+                    break
+            if len(merged) >= self.max_results:
+                break
+        return self._format_records(merged)
 
     @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=4)
     def _get(self, params: dict) -> dict:
@@ -74,12 +102,10 @@ class KokkaiTool(BaseTool):
         return rsp.json()
 
     @staticmethod
-    def _format(payload: dict) -> str:
-        total = payload.get("numberOfRecords", 0)
-        records = payload.get("speechRecord", []) or []
+    def _format_records(records: list) -> str:
         if not records:
             return "No Diet speech records found."
-        out = [f"{total} record(s) matched; showing {len(records)}:"]
+        out = [f"showing {len(records)} record(s):"]
         for r in records:
             speech = (r.get("speech") or "").replace("\n", " ")
             out.append(
@@ -88,3 +114,8 @@ class KokkaiTool(BaseTool):
                 f"{speech[:200]}"
             )
         return "\n".join(out)
+
+
+def _kokkai_records(payload: dict) -> list:
+    """Extract the speechRecord list from a kokkai API payload."""
+    return payload.get("speechRecord", []) or []
