@@ -34,6 +34,7 @@ from response import extract_json_between_markers, trim_long_string
 from node import ResearchNode, COMPLETE, INCOMPLETE
 from config import ModelSpec
 from data_agent import DataAgent
+import prompts
 
 FINALIZE = "Finalize"
 ANALYZE = "AnalyzeData"
@@ -70,24 +71,39 @@ def run_research(
     stage_prompt: str,
     language: str,
     spec: ModelSpec,
+    region: str,
+    region_level: str,
+    topic: str = "",
     tools: dict,
     data_agent: DataAgent,
     iters: int,
 ) -> ResearchResult:
-    """Drive the ACTION/ARGUMENTS loop against `node`, recording into it."""
+    """Drive the ACTION/ARGUMENTS loop against `node`, recording into it.
+
+    `stage_prompt` is a template carrying {region}/{region_level}/{topic}
+    placeholders (see prompts.py); it is formatted here so the research goal is
+    anchored to the jurisdiction. The system prompt embeds tool-applicability
+    guidance (TOOL_GUIDANCE) so the model picks sources suited to this level of
+    government rather than defaulting to national 国会 records.
+    """
     node.bump_stat("attempts")
     client, model = client_for(spec.model)
 
     catalog = _tool_catalog(tools)
+    tool_guidance = prompts.TOOL_GUIDANCE.format(
+        region=region, region_level=region_level)
     system = (
-        "You are an AI legislator conducting evidence research. Each turn, choose "
-        "exactly one tool and respond ONLY as:\n"
+        f"You are an AI legislator for {region} (level: {region_level}) "
+        "conducting evidence research. Each turn, choose exactly one tool and "
+        "respond ONLY as:\n"
         "ACTION: <tool name>\n"
         "ARGUMENTS: <a JSON object whose keys are that tool's listed arguments>\n\n"
         f"Available tools (with their arguments):\n{catalog}\n\n"
+        f"{tool_guidance}\n\n"
         f"Respond in {language}."
     )
-    prompt = f"{stage_prompt}\n\nContext:\n{context}\n\nBegin your research."
+    goal = stage_prompt.format(region=region, region_level=region_level, topic=topic)
+    prompt = f"{goal}\n\nContext:\n{context}\n\nBegin your research."
 
     history: list[dict] = []
     materials: list[dict] = []
