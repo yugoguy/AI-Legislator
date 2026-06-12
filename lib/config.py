@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 
 # Stage / role vocabularies (kept as constants so callers don't pass raw strings).
 STAGES = ("brainstorm", "research", "parliament", "refinement", "writeup")
-ROLES = ("legislator", "parliament", "coding", "writeup")
+ROLES = ("legislator", "parliament", "coding", "writeup", "evaluator")
 
 # Reference list of model strings to choose from when configuring `models` below.
 # NOT enforced: routing is by substring (see llm.py) and the provider API is the
@@ -68,14 +68,18 @@ def _default_models() -> dict[str, ModelSpec]:
     """Default per-(stage, role) models, keyed "stage:role".
     """
     return {
-        "brainstorm:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:coding": ModelSpec("gpt-5.4-mini"),
-        "parliament:parliament": ModelSpec("gpt-5.4-mini"),
-        "parliament:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:coding": ModelSpec("gpt-5.4-mini"),
-        "writeup:writeup": ModelSpec("gpt-5.4-mini"),
+        "brainstorm:legislator": ModelSpec("gpt-5.4-nano"),
+        "research:legislator": ModelSpec("gpt-5.4-nano"),
+        "research:coding": ModelSpec("gpt-5.4-nano"),
+        "parliament:parliament": ModelSpec("gpt-5.4-nano"),
+        "parliament:legislator": ModelSpec("gpt-5.4-nano"),
+        "refinement:legislator": ModelSpec("gpt-5.4-nano"),
+        "refinement:coding": ModelSpec("gpt-5.4-nano"),
+        "writeup:writeup": ModelSpec("gpt-5.4-nano"),
+        # The Evaluator scores each 議案 for the UCB selection policy. Role is
+        # stage-independent (scoring is the same wherever selection runs), so it
+        # is keyed under a single pseudo-stage "select".
+        "select:evaluator": ModelSpec("gpt-5.4-nano"),
     }
 
 
@@ -87,6 +91,9 @@ def _default_languages() -> dict[str, str]:
         "parliament": "Japanese",
         "refinement": "Japanese",
         "writeup": "Japanese",
+        # Evaluator reasons internally; its output is a parsed JSON score, so the
+        # language only affects its rationale text. Japanese keeps it consistent.
+        "select": "Japanese",
     }
 
 
@@ -107,6 +114,8 @@ class Config:
 
     # --- Stage sizes / iteration counts ---
     num_topics: int = 5              # initial high-level topic nodes
+    g_per_topic: int = 2             # candidate 議案 spawned per topic at brainstorm
+    brainstorm_iters: int = 4        # research iterations per brainstorm grounding
     research_selections: int = 20    # node selections in the research/G loop
     research_iters: int = 6          # conversation iterations per research execution
     parliament_max: int = 3          # G nodes taken to parliament (others closed)
@@ -114,6 +123,13 @@ class Config:
     refinement_selections: int = 8   # node selections in the refinement loop
     refinement_iters: int = 6        # conversation iterations per refinement research
     writeup_max: int = 3             # active G nodes written up at most
+
+    # --- Selection policy (UCB over active 議案) ---
+    # Pick score = Q(g) + ucb_c * sqrt(ln N_i / n_i), normalized over active G to
+    # a sampling distribution. Q in [0,1] from the Evaluator; n_i = research count
+    # of g; N_i = selection rounds g has been present for. See research_selection.
+    ucb_c: float = 1.0               # exploration weight (UCB1 standard is sqrt(2))
+    eval_every: int = 1              # re-score a g with the Evaluator every N picks of it
 
     # --- Parallelism ---
     batch_size: int = 3              # parallel work units per batch (no node overlap)
