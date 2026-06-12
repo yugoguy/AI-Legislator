@@ -27,6 +27,7 @@ Completion semantics (settled with the user)
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import date as _date
 from pathlib import Path
 
 from llm import client_for, get_response_from_llm
@@ -92,6 +93,7 @@ def run_research(
     catalog = _tool_catalog(tools)
     tool_guidance = prompts.TOOL_GUIDANCE.format(
         region=region, region_level=region_level)
+    today = _date.today().isoformat()
     system = (
         f"You are an AI legislator for {region} (level: {region_level}) "
         "conducting evidence research. Each turn, choose exactly one tool and "
@@ -100,6 +102,10 @@ def run_research(
         "ARGUMENTS: <a JSON object whose keys are that tool's listed arguments>\n\n"
         f"Available tools (with their arguments):\n{catalog}\n\n"
         f"{tool_guidance}\n\n"
+        f"Today's date is {today}; record it as the access date for any source "
+        "you use, so it can be cited. Note the exact identifier of each finding "
+        "(bill number, statistics table id, page title+URL, meeting date) for "
+        "later citation.\n\n"
         f"Respond in {language}."
     )
     goal = stage_prompt.format(region=region, region_level=region_level, topic=topic)
