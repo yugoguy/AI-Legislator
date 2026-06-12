@@ -23,7 +23,7 @@ from __future__ import annotations
 import backoff
 import requests
 
-from tools import BaseTool
+from tools import BaseTool, ToolResult
 
 _V2 = "https://laws.e-gov.go.jp/api/2"
 _TITLE_KEYS = ("law_title", "LawName", "law_name", "title")
@@ -48,17 +48,17 @@ class EgovLawTool(BaseTool):
         )
         self.max_results = max_results
 
-    def use_tool(self, query: str = "", law_id: str = "") -> str:
+    def use_tool(self, query: str = "", law_id: str = "") -> ToolResult:
         try:
             if law_id:
-                return self._format_text(self._fetch(law_id))
+                return ToolResult(True, self._format_text(self._fetch(law_id)))
             if query:
-                return self._format_search(self._search(query))
-            return "Provide either `query` or `law_id`."
+                return ToolResult(True, self._format_search(self._search(query)))
+            return ToolResult(False, "Provide either `query` or `law_id`.")
         except requests.HTTPError as e:
-            return f"e-Gov HTTP error: {e}"
+            return ToolResult(False, f"e-Gov HTTP error: {e}")
         except requests.RequestException as e:
-            return f"e-Gov request error: {e}"
+            return ToolResult(False, f"e-Gov request error: {e}")
 
     @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=4)
     def _search(self, query: str) -> dict:
