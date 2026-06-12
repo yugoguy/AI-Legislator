@@ -34,6 +34,11 @@ def _call(spec, system, user, *, record=None, name="legislator", image_paths=Non
     return content
 
 
+def _citation_format(cfg: Config) -> str:
+    """Region-filled citation-format block injected into drafting/write-up prompts."""
+    return prompts.CITATION_FORMAT.format(region=cfg.region)
+
+
 def generate_topics(cfg: Config) -> list[str]:
     spec = cfg.model_for("brainstorm", "legislator")
     lang = cfg.language_for("brainstorm")
@@ -58,7 +63,8 @@ def author_proposal(cfg: Config, stage: str, materials: str, g: GNode, *,
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
     system = prompts.BUILD_PROPOSAL_SYSTEM.format(
-        region=cfg.region, region_level=cfg.region_level, language=lang)
+        region=cfg.region, region_level=cfg.region_level, language=lang,
+        citation_format=_citation_format(cfg))
     user = prompts.BUILD_PROPOSAL_USER.format(materials=materials, region=cfg.region)
     content = _call(spec, system, user, record=record, name="author_proposal")
     _apply_proposal(content, g)
@@ -83,7 +89,8 @@ def rewrite_proposal(cfg: Config, stage: str, proposal: str, summary: str, g: GN
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
     system = prompts.BUILD_PROPOSAL_SYSTEM.format(
-        region=cfg.region, region_level=cfg.region_level, language=lang)
+        region=cfg.region, region_level=cfg.region_level, language=lang,
+        citation_format=_citation_format(cfg))
     user = prompts.REWRITE_PROPOSAL_USER.format(
         proposal=proposal, summary=summary, region=cfg.region)
     content = _call(spec, system, user, record=record, name="rewrite_proposal")
@@ -113,7 +120,8 @@ def write_up(cfg: Config, context: str, g: GNode, *, record=None) -> None:
     lang = cfg.language_for("writeup")
     system = prompts.WRITEUP_SYSTEM.format(
         region=cfg.region, region_level=cfg.region_level, language=lang)
-    user = prompts.WRITEUP_USER.format(context=context, region=cfg.region)
+    user = prompts.WRITEUP_USER.format(context=context, region=cfg.region,
+                                       citation_format=_citation_format(cfg))
     content = _call(spec, system, user, record=record, name="write_up")
     _apply_proposal(content, g)
 
