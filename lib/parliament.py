@@ -53,7 +53,7 @@ def run_parliament(cfg: Config, g: GNode, parl: ParliamentNode, *,
 
     spec = cfg.model_for("parliament", "parliament")
     lang = cfg.language_for("parliament")
-    q_system = prompts.QUESTION_SYSTEM.format(language=lang)
+    q_system = prompts.QUESTION_SYSTEM.format(region=cfg.region, language=lang)
     client, model = client_for(spec.model)
 
     proposal = g.read_proposal() or ""
