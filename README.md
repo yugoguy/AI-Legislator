@@ -55,3 +55,6 @@ End
 conda deactivate
 gpgconf --kill gpg-agent
 ```
+
+Citation
+https://github.com/SakanaAI/AI-Scientist-v2/blob/main/README.md
