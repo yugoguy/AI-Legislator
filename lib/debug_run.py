@@ -152,6 +152,13 @@ def fake_llm(
     elif "reflecting after a parliamentary" in s:
         content = "次段階で財源データをe-Statと国会会議録で補強する。"
 
+    elif "evaluator scoring a 議案" in s:
+        content = (
+            '```json\n{"grounding": 0.4, "specificity": 0.5, '
+            '"jurisdictional_fit": 0.6, "feasibility": 0.5, "potential": 0.6, '
+            '"final_score": 0.52}\n```'
+        )
+
     else:
         content = "（デバッグ応答）"
 
@@ -167,7 +174,8 @@ def fake_client(model):
 
 
 def _patch_llm() -> None:
-    for mod in (legislator, research, parliament, data_agent):
+    import evaluator
+    for mod in (legislator, research, parliament, data_agent, evaluator):
         mod.get_response_from_llm = fake_llm
         mod.client_for = fake_client
 
@@ -215,11 +223,12 @@ def run_pipeline(tools: dict) -> Path:
 
     from research_selection import make_research_select
     from parliament_selection import make_parliament_select
+    import evaluator as evaluator_mod
 
     tree = orchestrator.evolve(
         cfg,
         tools=tools,
-        research_select=make_research_select(seed=0),
+        research_select=make_research_select(cfg, evaluator_mod.evaluate, seed=0),
         parliament_select=make_parliament_select(seed=0),
         pdf_renderer=real_pdf_renderer,
     )
