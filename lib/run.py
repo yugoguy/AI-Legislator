@@ -88,6 +88,9 @@ def main() -> None:
     tools = tools_mod.build_default_tools(
         web_search_model=cfg.web_search_model,
         web_search_max_results=cfg.web_search_max_results,
+        region=cfg.region,
+        local_sources=cfg.local_sources,
+        local_max_results=cfg.local_max_results,
     )
     log.info("tools available: %s", ", ".join(sorted(tools)) or "(none)")
 
