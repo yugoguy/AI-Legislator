@@ -77,7 +77,18 @@ def main() -> None:
     prefix = "run_debug" if debug else "run"
     cfg = replace(cfg, root_dir=f"./{prefix}_{timestamp}")
 
-    tools = tools_mod.build_default_tools()
+    # Mirror all terminal logging into a run.log inside the run directory.
+    Path(cfg.root_dir).mkdir(parents=True, exist_ok=True)
+    file_handler = logging.FileHandler(Path(cfg.root_dir) / "run.log", encoding="utf-8")
+    file_handler.setFormatter(logging.Formatter(
+        "%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    logging.getLogger().addHandler(file_handler)
+    log.info("logging to %s", Path(cfg.root_dir) / "run.log")
+
+    tools = tools_mod.build_default_tools(
+        web_search_model=cfg.web_search_model,
+        web_search_max_results=cfg.web_search_max_results,
+    )
     log.info("tools available: %s", ", ".join(sorted(tools)) or "(none)")
 
     research_select = make_research_select(cfg, evaluator_mod.evaluate, seed=cfg.seed)
