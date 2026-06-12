@@ -65,13 +65,17 @@ class BaseTool(ABC):
 
 
 def build_default_tools(web_search_model: str = "claude-haiku-4-5-20251001",
-                        web_search_max_results: int = 5) -> dict[str, "BaseTool"]:
+                        web_search_max_results: int = 5,
+                        region: str = "",
+                        local_sources: dict | None = None,
+                        local_max_results: int = 10) -> dict[str, "BaseTool"]:
     """Assemble the data-source registry, skipping tools missing credentials."""
     from estat import EstatTool
     from kokkai import KokkaiTool
-    # from egov import EgovLawTool  # disabled: e-Gov tool currently not working
-    from webscrape import WebScrapeTool
+    # from egov import EgovLawTool       # disabled: e-Gov tool currently not working
+    # from webscrape import WebScrapeTool  # disabled: replaced by SearchWeb (no URL guessing)
     from websearch import WebSearchTool
+    from local_data import build_local_tool
 
     tools: dict[str, BaseTool] = {}
 
@@ -81,12 +85,19 @@ def build_default_tools(web_search_model: str = "claude-haiku-4-5-20251001",
     else:
         warnings.warn("ESTAT_APP_ID not set; e-Stat tool disabled.")
 
+    # Local-government data bridge for the target region (authoritative local
+    # bills + minutes), if a dataset is configured/available for it.
+    local = build_local_tool(region, local_sources or {}, max_results=local_max_results)
+    if local is not None:
+        tools[local.name] = local
+    else:
+        warnings.warn(f"No local dataset available for region {region!r}; "
+                      "SearchLocalGov disabled.")
+
     web = WebSearchTool(model=web_search_model, max_results=web_search_max_results)
-    # SearchWeb (discovery, returns real pages) + FetchWebPage (fetch a URL that
-    # SearchWeb surfaced). KokkaiTool for national Diet records.
-    tools[web.name] = web
-    for cls in (KokkaiTool, WebScrapeTool):  # EgovLawTool disabled
-        t = cls()
-        tools[t.name] = t
+    tools[web.name] = web                       # discovery via real web search
+
+    t = KokkaiTool()                            # national Diet records
+    tools[t.name] = t
 
     return tools
