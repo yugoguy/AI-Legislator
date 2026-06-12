@@ -39,7 +39,8 @@ def generate_topics(cfg: Config) -> list[str]:
     lang = cfg.language_for("brainstorm")
     system = prompts.TOPIC_SYSTEM.format(region=cfg.region,
                                          region_level=cfg.region_level, language=lang)
-    user = prompts.TOPIC_USER.format(n=cfg.num_topics, language=lang)
+    user = prompts.TOPIC_USER.format(n=cfg.num_topics, region=cfg.region,
+                                     region_level=cfg.region_level, language=lang)
     content = _call(spec, system, user, name="generate_topics")
     data = extract_json_between_markers(content)
     if isinstance(data, list):
@@ -56,8 +57,9 @@ def author_proposal(cfg: Config, stage: str, materials: str, g: GNode, *,
     """Write g.proposal.md and set its EN/JA titles from research materials."""
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
-    system = prompts.BUILD_PROPOSAL_SYSTEM.format(region=cfg.region, language=lang)
-    user = prompts.BUILD_PROPOSAL_USER.format(materials=materials)
+    system = prompts.BUILD_PROPOSAL_SYSTEM.format(
+        region=cfg.region, region_level=cfg.region_level, language=lang)
+    user = prompts.BUILD_PROPOSAL_USER.format(materials=materials, region=cfg.region)
     content = _call(spec, system, user, record=record, name="author_proposal")
     _apply_proposal(content, g)
 
@@ -66,8 +68,9 @@ def decide_action(cfg: Config, stage: str, proposal: str, summary: str, *,
                   record=None) -> dict:
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
-    system = prompts.UPDATE_DECISION_SYSTEM.format(language=lang)
-    user = prompts.UPDATE_DECISION_USER.format(proposal=proposal, summary=summary)
+    system = prompts.UPDATE_DECISION_SYSTEM.format(region=cfg.region, language=lang)
+    user = prompts.UPDATE_DECISION_USER.format(
+        proposal=proposal, summary=summary, region=cfg.region)
     content = _call(spec, system, user, record=record, name="decide_action")
     decision = extract_json_between_markers(content) or {}
     if decision.get("action") not in ("update", "create", "close"):
@@ -79,8 +82,10 @@ def rewrite_proposal(cfg: Config, stage: str, proposal: str, summary: str, g: GN
                      record=None) -> None:
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
-    system = prompts.BUILD_PROPOSAL_SYSTEM.format(region=cfg.region, language=lang)
-    user = prompts.REWRITE_PROPOSAL_USER.format(proposal=proposal, summary=summary)
+    system = prompts.BUILD_PROPOSAL_SYSTEM.format(
+        region=cfg.region, region_level=cfg.region_level, language=lang)
+    user = prompts.REWRITE_PROPOSAL_USER.format(
+        proposal=proposal, summary=summary, region=cfg.region)
     content = _call(spec, system, user, record=record, name="rewrite_proposal")
     _apply_proposal(content, g)
 
@@ -89,7 +94,7 @@ def answer(cfg: Config, proposal: str, materials: str, question: str, *,
            record=None) -> str:
     spec = cfg.model_for("parliament", "legislator")
     lang = cfg.language_for("parliament")
-    system = prompts.ANSWER_SYSTEM.format(language=lang)
+    system = prompts.ANSWER_SYSTEM.format(region=cfg.region, language=lang)
     user = prompts.ANSWER_USER.format(proposal=proposal, materials=materials,
                                       question=question)
     return _call(spec, system, user, record=record, name="answer")
@@ -98,7 +103,7 @@ def answer(cfg: Config, proposal: str, materials: str, question: str, *,
 def reflect(cfg: Config, transcript: str, *, record=None) -> str:
     spec = cfg.model_for("parliament", "legislator")
     lang = cfg.language_for("parliament")
-    system = prompts.REFLECT_SYSTEM.format(language=lang)
+    system = prompts.REFLECT_SYSTEM.format(region=cfg.region, language=lang)
     user = prompts.REFLECT_USER.format(transcript=transcript)
     return _call(spec, system, user, record=record, name="reflect")
 
@@ -106,8 +111,9 @@ def reflect(cfg: Config, transcript: str, *, record=None) -> str:
 def write_up(cfg: Config, context: str, g: GNode, *, record=None) -> None:
     spec = cfg.model_for("writeup", "writeup")
     lang = cfg.language_for("writeup")
-    system = prompts.WRITEUP_SYSTEM.format(region=cfg.region, language=lang)
-    user = prompts.WRITEUP_USER.format(context=context)
+    system = prompts.WRITEUP_SYSTEM.format(
+        region=cfg.region, region_level=cfg.region_level, language=lang)
+    user = prompts.WRITEUP_USER.format(context=context, region=cfg.region)
     content = _call(spec, system, user, record=record, name="write_up")
     _apply_proposal(content, g)
 
@@ -117,7 +123,5 @@ def _apply_proposal(content: str, g: GNode) -> None:
     titles = extract_json_between_markers(content) or {}
     md = extract_text_up_to_code(content) or content
     g.write_proposal(md.strip())
-    if titles.get("title_en"):
-        g.title_en = str(titles["title_en"])
-    if titles.get("title_ja"):
-        g.title_ja = str(titles["title_ja"])
+    # set_titles logs the change into g.title_history (incl. the first title).
+    g.set_titles(titles.get("title_en"), titles.get("title_ja"))
