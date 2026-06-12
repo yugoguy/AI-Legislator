@@ -15,11 +15,13 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import replace
+from datetime import datetime
 from pathlib import Path
 
 from config import Config
 from orchestrator import evolve
 import tools as tools_mod
+import evaluator as evaluator_mod
 from research_selection import make_research_select
 from parliament_selection import make_parliament_select
 
@@ -78,7 +80,7 @@ def main() -> None:
     tools = tools_mod.build_default_tools()
     log.info("tools available: %s", ", ".join(sorted(tools)) or "(none)")
 
-    research_select = make_research_select(seed=cfg.seed)
+    research_select = make_research_select(cfg, evaluator_mod.evaluate, seed=cfg.seed)
     parliament_select = make_parliament_select(seed=cfg.seed)
 
     log.info("starting run (debug=%s) -> %s", debug, cfg.root_dir)
