@@ -134,7 +134,22 @@ class Tree:
                 if g.type != G:
                     continue
                 tag = "closed" if g.state == CLOSED else "active"
-                lines.append(f"  [G:{tag}] {g.node_id}  {g.title_ja[:50]}")
+                q = g.stats.get("Q", 0.0)
+                nsel = g.stats.get("research_count", 0)
+                lines.append(
+                    f"  [G:{tag}] {g.node_id}  Q={q:.2f} n={nsel}  "
+                    f"{(g.title_ja or '(untitled)')[:50]}"
+                )
+                # Title evolution (only if it actually changed over time).
+                titles = [h.get("title_ja", "") for h in g.title_history]
+                if len(titles) > 1:
+                    lines.append("      title: " + " → ".join(
+                        (tt or "(untitled)")[:30] for tt in titles))
+                # Decision trail: update/create/close/research_fail per step.
+                if g.decision_history:
+                    trail = " ".join(f"{d['stage'][:4]}:{d['action']}"
+                                     for d in g.decision_history)
+                    lines.append(f"      decisions: {trail}")
                 for c in self.children(g.node_id):
                     lines.append(f"    [{c.type}:{c.state}] {c.node_id}")
         (self.root / "progress.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
