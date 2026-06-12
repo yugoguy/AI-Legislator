@@ -137,8 +137,18 @@ class GNode(Node):
 
     title_en: str = ""
     title_ja: str = ""
+    origin_topic: str = ""        # the brainstorm topic text this 議案 came from
     # Short per-research-attempt log: {research_id, source, query, outcome, ok}.
     research_summaries: list[dict] = field(default_factory=list)
+    # Title evolution: appended whenever a title actually changes.
+    title_history: list[dict] = field(default_factory=list)
+    # Per-research-step decisions: {stage, action, rationale}; action is one of
+    # update | create | close | research_fail (research_fail when research left
+    # the node INCOMPLETE so no legislator decision was taken).
+    decision_history: list[dict] = field(default_factory=list)
+    # Evaluator score history: {step, scores: {...}, final}. Latest final also
+    # mirrored into stats["Q"] for fast selection reads.
+    q_history: list[dict] = field(default_factory=list)
 
     PROPOSAL_MD = "proposal.md"
     PROPOSAL_PDF = "proposal.pdf"
@@ -147,6 +157,8 @@ class GNode(Node):
         super().__post_init__()
         self.stats.setdefault("times_selected", 0)
         self.stats.setdefault("went_to_parliament", False)
+        self.stats.setdefault("research_count", 0)   # n_i for UCB selection
+        self.stats.setdefault("Q", 0.0)              # latest Evaluator score
 
     @property
     def assets_dir(self) -> Path:
@@ -174,6 +186,34 @@ class GNode(Node):
             {"research_id": research_id, "source": source,
              "query": query, "outcome": outcome, "ok": ok}
         )
+
+    # ---- title / decision / score history ----
+
+    def set_titles(self, title_en: str | None, title_ja: str | None) -> bool:
+        """Update titles, logging the change. Returns True if anything changed."""
+        new_en = str(title_en) if title_en else self.title_en
+        new_ja = str(title_ja) if title_ja else self.title_ja
+        if new_en == self.title_en and new_ja == self.title_ja:
+            return False
+        self.title_en, self.title_ja = new_en, new_ja
+        self.title_history.append({"title_ja": new_ja, "title_en": new_en})
+        return True
+
+    def record_decision(self, stage: str, action: str,
+                        rationale: str = "") -> None:
+        """Log the action taken after a research step (incl. 'research_fail')."""
+        self.decision_history.append(
+            {"stage": stage, "action": action, "rationale": rationale}
+        )
+
+    def record_score(self, step: int, scores: dict, final: float) -> None:
+        """Record an Evaluator score; mirror the latest final into stats['Q']."""
+        self.q_history.append({"step": step, "scores": scores, "final": final})
+        self.stats["Q"] = float(final)
+
+    @property
+    def q_score(self) -> float:
+        return float(self.stats.get("Q", 0.0))
 
     def render_pdf(self, renderer) -> Path:
         """Render proposal.md -> proposal.pdf via an injected `renderer(md, path)`.
