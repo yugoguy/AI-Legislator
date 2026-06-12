@@ -18,7 +18,7 @@ from __future__ import annotations
 import backoff
 import requests
 
-from tools import BaseTool
+from tools import BaseTool, ToolResult
 
 _URL = "https://kokkai.ndl.go.jp/api/speech"
 
@@ -45,9 +45,9 @@ class KokkaiTool(BaseTool):
         self.max_results = max_results
 
     def use_tool(self, query: str = "", speaker: str = "", house: str = "",
-                 since: str = "", until: str = "") -> str:
+                 since: str = "", until: str = "") -> ToolResult:
         if not (query or speaker):
-            return "Provide at least `query` or `speaker`."
+            return ToolResult(False, "Provide at least `query` or `speaker`.")
         base = {
             "recordPacking": "json",
             "maximumRecords": self.max_results,
@@ -61,9 +61,11 @@ class KokkaiTool(BaseTool):
         if until:
             base["until"] = until
         try:
-            return self._search_union(query, base)
+            return ToolResult(True, self._search_union(query, base))
         except requests.HTTPError as e:
-            return f"Kokkai HTTP error: {e}"
+            return ToolResult(False, f"Kokkai HTTP error: {e}")
+        except requests.RequestException as e:
+            return ToolResult(False, f"Kokkai request error: {e}")
 
     def _search_union(self, query: str, base: dict) -> str:
         """Search each whitespace-separated keyword separately and union results.
