@@ -70,6 +70,7 @@ _SAMPLE_ARGS = {
     "SearchKokkai": {"query": "高齢化"},
     "SearchEgovLaw": {"query": "介護保険"},
     "SearchWeb": {"query": "横浜市 高齢化"},
+    "SearchLocalGov": {"action": "search", "query": "高齢化"},
     "FetchWebPage": {"url": "https://www.bousai.go.jp/"},
 }
 
@@ -190,7 +191,14 @@ def _patch_llm() -> None:
 
 
 def _build_tools() -> dict:
-    return build_default_tools()
+    cfg = Config()
+    return build_default_tools(
+        web_search_model=cfg.web_search_model,
+        web_search_max_results=cfg.web_search_max_results,
+        region=cfg.region,
+        local_sources=cfg.local_sources,
+        local_max_results=cfg.local_max_results,
+    )
 
 
 def check_tools(tools: dict) -> None:
