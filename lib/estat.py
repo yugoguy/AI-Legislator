@@ -53,10 +53,36 @@ class EstatTool(BaseTool):
             if stats_data_id:
                 return self._format_data(self._get_data(stats_data_id))
             if query:
-                return self._format_list(self._get_list(query))
+                return self._search_union(query)
             return "Provide either `query` or `stats_data_id`."
         except requests.HTTPError as e:
             return f"e-Stat HTTP error: {e}"
+
+    def _search_union(self, query: str) -> str:
+        """Search each whitespace-separated term separately and union results.
+
+        e-Stat's `searchWord` treats a multi-term string as AND, which usually
+        over-narrows to zero hits. Splitting into one call per term and unioning
+        (dedup by table id, capped at max_results) approximates an OR search and
+        reliably returns something the model can use.
+        """
+        terms = query.split()
+        if len(terms) <= 1:
+            return self._format_tables(_estat_tables(self._get_list(query)))
+        seen: set[str] = set()
+        merged: list[dict] = []
+        for term in terms:
+            for t in _estat_tables(self._get_list(term)):
+                tid = t.get("@id", "")
+                if tid and tid in seen:
+                    continue
+                seen.add(tid)
+                merged.append(t)
+                if len(merged) >= self.max_results:
+                    break
+            if len(merged) >= self.max_results:
+                break
+        return self._format_tables(merged)
 
     @backoff.on_exception(backoff.expo, requests.exceptions.RequestException, max_tries=4)
     def _get_list(self, query: str) -> dict:
@@ -81,12 +107,7 @@ class EstatTool(BaseTool):
         return rsp.json()
 
     @staticmethod
-    def _format_list(payload: dict) -> str:
-        root = payload.get("GET_STATS_LIST", {})
-        info = root.get("DATALIST_INF", {})
-        tables = info.get("TABLE_INF", [])
-        if isinstance(tables, dict):
-            tables = [tables]
+    def _format_tables(tables: list) -> str:
         if not tables:
             return "No statistical tables found."
         out = []
@@ -111,6 +132,15 @@ class EstatTool(BaseTool):
         for v in values[:50]:
             out.append(f"{ {k: v[k] for k in v if k != '$'} } = {v.get('$')}")
         return "\n".join(out)
+
+
+def _estat_tables(payload: dict) -> list:
+    """Extract the TABLE_INF list from a getStatsList payload (dict -> [dict])."""
+    root = payload.get("GET_STATS_LIST", {})
+    tables = root.get("DATALIST_INF", {}).get("TABLE_INF", [])
+    if isinstance(tables, dict):
+        tables = [tables]
+    return tables or []
 
 
 def _txt(node: Any) -> str:
