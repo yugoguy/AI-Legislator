@@ -28,12 +28,12 @@ _CRITERIA = ("grounding", "specificity", "jurisdictional_fit",
 
 
 def _summaries_text(g: GNode) -> str:
-    if not g.research_summaries:
-        return "(no research gathered yet)"
-    return "\n".join(
-        f"- [{'ok' if s['ok'] else 'failed'}] {s['source']}: {s['outcome']}"
-        for s in g.research_summaries
-    )
+    # Only successful findings are evidence. Failed research items (tool/process
+    # errors) are excluded so they cannot drag down the proposal's score.
+    ok_items = [s for s in g.research_summaries if s.get("ok")]
+    if not ok_items:
+        return "(no successful research gathered yet)"
+    return "\n".join(f"- {s['source']}: {s['outcome']}" for s in ok_items)
 
 
 def _reduce(data: dict) -> tuple[float, dict]:
