@@ -15,7 +15,30 @@ from __future__ import annotations
 import os
 import warnings
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import Any
+
+
+@dataclass
+class ToolResult:
+    """What every tool returns: an explicit success flag plus text for the model.
+
+    `ok` distinguishes a genuine TOOL/PROCESS failure (HTTP error, page not
+    found, missing credential, malformed request) from a successful call — even
+    one that legitimately found nothing. This matters because the research loop
+    uses `ok` to decide whether a step counts as progress: a 404 must NOT be
+    recorded as successful research, while an empty-but-valid result still is.
+
+    `text` is the human-readable string shown to the model either way (an error
+    message is useful feedback to the agent's PROCESS, but is not evidence about
+    any proposal — see the prompts).
+    """
+
+    ok: bool
+    text: str
+
+    def __str__(self) -> str:
+        return self.text
 
 
 class BaseTool(ABC):
@@ -24,6 +47,10 @@ class BaseTool(ABC):
     - name: the tool's invocation name (used as the ACTION token).
     - description: one line shown to the model in the tool catalog.
     - parameters: list of {"name","type","description"} dicts.
+
+    use_tool returns a ToolResult(ok, text). `ok=False` signals a tool/process
+    failure (not evidence about a proposal); `ok=True` covers success including
+    a valid "nothing found".
     """
 
     def __init__(self, name: str, description: str, parameters: list[dict[str, Any]]):
@@ -32,17 +59,19 @@ class BaseTool(ABC):
         self.parameters = parameters
 
     @abstractmethod
-    def use_tool(self, **kwargs) -> Any:
-        """Run the tool. Subclasses return a human-readable string for the model."""
+    def use_tool(self, **kwargs) -> "ToolResult":
+        """Run the tool. Subclasses return a ToolResult(ok, text)."""
         raise NotImplementedError
 
 
-def build_default_tools() -> dict[str, "BaseTool"]:
+def build_default_tools(web_search_model: str = "claude-haiku-4-5-20251001",
+                        web_search_max_results: int = 5) -> dict[str, "BaseTool"]:
     """Assemble the data-source registry, skipping tools missing credentials."""
     from estat import EstatTool
     from kokkai import KokkaiTool
     # from egov import EgovLawTool  # disabled: e-Gov tool currently not working
     from webscrape import WebScrapeTool
+    from websearch import WebSearchTool
 
     tools: dict[str, BaseTool] = {}
 
@@ -52,6 +81,10 @@ def build_default_tools() -> dict[str, "BaseTool"]:
     else:
         warnings.warn("ESTAT_APP_ID not set; e-Stat tool disabled.")
 
+    web = WebSearchTool(model=web_search_model, max_results=web_search_max_results)
+    # SearchWeb (discovery, returns real pages) + FetchWebPage (fetch a URL that
+    # SearchWeb surfaced). KokkaiTool for national Diet records.
+    tools[web.name] = web
     for cls in (KokkaiTool, WebScrapeTool):  # EgovLawTool disabled
         t = cls()
         tools[t.name] = t
