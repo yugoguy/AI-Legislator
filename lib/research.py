@@ -143,16 +143,18 @@ def run_research(
                       f"Output:\n```\n{feedback}\n```\nContinue, or Finalize.")
         elif action in tools:
             try:
-                out = tools[action].use_tool(**(args or {}))
-                last_ok = True
-            except Exception as e:                       # tool failure
+                result = tools[action].use_tool(**(args or {}))
+                last_ok = bool(getattr(result, "ok", True))
+                out = getattr(result, "text", str(result))
+            except Exception as e:                       # unexpected tool crash
                 out = f"Error using {action}: {e}"
                 last_ok = False
             materials.append({"action": action, "arguments": args,
                               "ok": last_ok, "output": out})
             node.source = action
             node.query_input = str(args)
-            prompt = (f"{action} returned:\n```\n{trim_long_string(str(out))}\n```\n"
+            status_word = "returned" if last_ok else "FAILED (process error, not evidence)"
+            prompt = (f"{action} {status_word}:\n```\n{trim_long_string(str(out))}\n```\n"
                       "Continue, or Finalize.")
         else:                                            # unparseable / unknown
             last_ok = False
