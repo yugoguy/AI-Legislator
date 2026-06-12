@@ -22,7 +22,7 @@ from typing import Any
 import backoff
 import requests
 
-from tools import BaseTool
+from tools import BaseTool, ToolResult
 
 _BASE = "https://api.e-stat.go.jp/rest/3.0/app/json"
 
@@ -46,17 +46,19 @@ class EstatTool(BaseTool):
         self.max_results = max_results
         self.app_id = os.getenv("ESTAT_APP_ID")
 
-    def use_tool(self, query: str = "", stats_data_id: str = "") -> str:
+    def use_tool(self, query: str = "", stats_data_id: str = "") -> ToolResult:
         if not self.app_id:
-            return "e-Stat error: ESTAT_APP_ID is not set."
+            return ToolResult(False, "e-Stat error: ESTAT_APP_ID is not set.")
         try:
             if stats_data_id:
-                return self._format_data(self._get_data(stats_data_id))
+                return ToolResult(True, self._format_data(self._get_data(stats_data_id)))
             if query:
-                return self._search_union(query)
-            return "Provide either `query` or `stats_data_id`."
+                return ToolResult(True, self._search_union(query))
+            return ToolResult(False, "Provide either `query` or `stats_data_id`.")
         except requests.HTTPError as e:
-            return f"e-Stat HTTP error: {e}"
+            return ToolResult(False, f"e-Stat HTTP error: {e}")
+        except requests.RequestException as e:
+            return ToolResult(False, f"e-Stat request error: {e}")
 
     def _search_union(self, query: str) -> str:
         """Search each whitespace-separated term separately and union results.
