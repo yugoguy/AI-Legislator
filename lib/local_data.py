@@ -23,7 +23,10 @@ Action protocol (single tool, sub-action by `action` arg)
 ---------------------------------------------------------
   action="search"  query=<keyword>      -> matching bills (id, title, result, ...)
   action="bill"    record_id=<id>       -> one bill's full detail (+ minutes avail)
-  action="minutes" session=<title>      -> that session's 会議録 text (if available)
+  action="minutes" record_id=<id>       -> LOCATE: numbered occurrences of the bill
+                                           in its session minutes
+  action="minutes" record_id=<id> query="hit=N"
+                                        -> READ: text window around occurrence N
 
 Keyword search MUST be single-concept-friendly: fetchers union over space-split
 terms (OR), so long multi-term queries do not over-narrow (same fix as the
@@ -64,9 +67,17 @@ class LocalFetcher(ABC):
         submitter, date, attached documents, and which session minutes exist)."""
 
     @abstractmethod
-    def get_minutes(self, session: str, query: str = "") -> str:
-        """Return a session's 会議録 text. `query`, if given, may be used by the
-        implementation to return only the most relevant excerpts."""
+    def get_minutes(self, record_id: str, query: str = "") -> str:
+        """Read a bill's session minutes. Two-step, driven by `query`:
+
+          query == ""        -> LOCATE: list numbered occurrences of this bill in
+                                its session's minutes (compact previews) so the
+                                agent can choose which to read.
+          query == "hit=N"   -> READ: return the text window around occurrence N.
+
+        The agent identifies the bill by `record_id` only; the implementation
+        derives the search term from the bill (its number). The agent does not
+        supply a keyword."""
 
 
 class LocalGovTool(BaseTool):
@@ -83,9 +94,11 @@ class LocalGovTool(BaseTool):
             f"(議案・請願) and their meeting minutes (会議録). "
             "Use `action`: 'search' with a `query` keyword to find bills; 'bill' "
             "with a `record_id` to read one bill's full detail; 'minutes' with a "
-            "`session` title to read that session's 会議録. This is the primary, "
-            "authoritative source for THIS jurisdiction's legislative record — "
-            "prefer it over web search for local bills and assembly debate."
+            "`record_id` to find where that bill is discussed in its session "
+            "minutes — it returns a numbered list of occurrences, then call again "
+            "with `query`=\"hit=<N>\" to read the text around occurrence N. This "
+            "is the authoritative source for THIS jurisdiction's legislative "
+            "record — prefer it over web search for local bills and debate."
         )
         if not avail:
             desc = (f"(Unavailable for {region}: no local dataset is configured. "
@@ -97,18 +110,20 @@ class LocalGovTool(BaseTool):
                 {"name": "action", "type": "str",
                  "description": "One of: search | bill | minutes."},
                 {"name": "query", "type": "str",
-                 "description": "Keyword for action=search (single concept works "
-                                "best; multiple terms are OR-matched)."},
+                 "description": "For action=search: a single-concept keyword "
+                                "(multiple terms are OR-matched). For "
+                                "action=minutes: leave empty to list where this "
+                                "bill is discussed, then pass \"hit=<N>\" to read "
+                                "occurrence N. (Minutes are located by the bill's "
+                                "own number; you do not supply a keyword.)"},
                 {"name": "record_id", "type": "str",
-                 "description": "Bill id for action=bill (from a search result)."},
-                {"name": "session", "type": "str",
-                 "description": "Session title for action=minutes "
-                                "(e.g. 令和7年第2回定例会)."},
+                 "description": "Bill id for action=bill or action=minutes "
+                                "(from a search result)."},
             ],
         )
 
-    def use_tool(self, action: str = "", query: str = "", record_id: str = "",
-                 session: str = "") -> ToolResult:
+    def use_tool(self, action: str = "", query: str = "",
+                 record_id: str = "") -> ToolResult:
         if self.fetcher is None:
             return ToolResult(False,
                               f"No local dataset is configured for {self.region}.")
@@ -123,9 +138,9 @@ class LocalGovTool(BaseTool):
                     return ToolResult(False, "action=bill needs a `record_id`.")
                 return ToolResult(True, self.fetcher.get_bill(record_id))
             if action == "minutes":
-                if not session:
-                    return ToolResult(False, "action=minutes needs a `session`.")
-                return ToolResult(True, self.fetcher.get_minutes(session, query))
+                if not record_id:
+                    return ToolResult(False, "action=minutes needs a `record_id`.")
+                return ToolResult(True, self.fetcher.get_minutes(record_id, query))
             return ToolResult(False,
                               "Unknown `action`. Use search | bill | minutes.")
         except FileNotFoundError as e:
