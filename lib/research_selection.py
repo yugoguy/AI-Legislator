@@ -69,7 +69,12 @@ class UCBResearchSelect:
         due = last is None or (n - int(last)) >= max(1, self.cfg.eval_every)
         if not due:
             return
-        q, subs = self.evaluator(self.cfg, g, record=g.record_raw)
+        try:
+            q, subs = self.evaluator(self.cfg, g, record=g.record_raw)
+        except Exception:
+            # Transient eval failure (API drop after retries): keep the prior Q
+            # and let the next due round try again, rather than crashing selection.
+            return
         g.record_score(self.step, subs, q)
         g.stats["q_eval_at_count"] = n
         tree.save(g)
