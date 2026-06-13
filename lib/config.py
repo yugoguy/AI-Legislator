@@ -68,18 +68,18 @@ def _default_models() -> dict[str, ModelSpec]:
     """Default per-(stage, role) models, keyed "stage:role".
     """
     return {
-        "brainstorm:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:coding": ModelSpec("gpt-5.4-mini"),
-        "parliament:parliament": ModelSpec("gpt-5.4-mini"),
-        "parliament:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:coding": ModelSpec("gpt-5.4-mini"),
-        "writeup:writeup": ModelSpec("gpt-5.4-mini"),
+        "brainstorm:legislator": ModelSpec("gpt-5-mini"),
+        "research:legislator": ModelSpec("gpt-5-mini"),
+        "research:coding": ModelSpec("gpt-5-mini"),
+        "parliament:parliament": ModelSpec("gpt-5-mini"),
+        "parliament:legislator": ModelSpec("gpt-5-mini"),
+        "refinement:legislator": ModelSpec("gpt-5-mini"),
+        "refinement:coding": ModelSpec("gpt-5-mini"),
+        "writeup:writeup": ModelSpec("gpt-5-mini"),
         # The Evaluator scores each 議案 for the UCB selection policy. Role is
         # stage-independent (scoring is the same wherever selection runs), so it
         # is keyed under a single pseudo-stage "select".
-        "select:evaluator": ModelSpec("gpt-5.4-mini"),
+        "select:evaluator": ModelSpec("gpt-5-mini"),
     }
 
 
@@ -113,15 +113,15 @@ class Config:
     languages: dict[str, str] = field(default_factory=_default_languages)
 
     # --- Stage sizes / iteration counts ---
-    num_topics: int = 5              # initial high-level topic nodes
+    num_topics: int = 8              # initial high-level topic nodes
     g_per_topic: int = 2             # candidate 議案 spawned per topic at brainstorm
-    brainstorm_iters: int = 4        # research iterations per brainstorm grounding
-    research_selections: int = 20    # node selections in the research/G loop
-    research_iters: int = 6          # conversation iterations per research execution
+    brainstorm_iters: int = 10        # research iterations per brainstorm grounding
+    research_selections: int = 50    # node selections in the research/G loop
+    research_iters: int = 10          # conversation iterations per research execution
     parliament_max: int = 3          # G nodes taken to parliament (others closed)
-    parliament_rounds: int = 6       # Q&A rounds per G
-    refinement_selections: int = 8   # node selections in the refinement loop
-    refinement_iters: int = 6        # conversation iterations per refinement research
+    parliament_rounds: int = 3       # Q&A rounds per G
+    refinement_selections: int = 10   # node selections in the refinement loop
+    refinement_iters: int = 10      # conversation iterations per refinement research
     writeup_max: int = 3             # active G nodes written up at most
 
     # --- Selection policy (UCB over active 議案) ---
@@ -129,21 +129,21 @@ class Config:
     # a sampling distribution. Q in [0,1] from the Evaluator; n_i = research count
     # of g; N_i = selection rounds g has been present for. See research_selection.
     ucb_c: float = 1.0               # exploration weight (UCB1 standard is sqrt(2))
-    eval_every: int = 1              # re-score a g with the Evaluator every N picks of it
+    eval_every: int = 2              # re-score a g with the Evaluator every N picks of it
 
     # --- Parallelism ---
     batch_size: int = 3              # parallel work units per batch (no node overlap)
 
     # --- Data agent / execution ---
-    exec_timeout: int = 1200         # per code execution, seconds
+    exec_timeout: int = 1800         # per code execution, seconds
     data_agent_iters: int = 4        # generate->run->reflect rounds
 
     # --- Web search (SearchWeb tool, provider-native server-side search) ---
     # Model that executes web searches, independent of the legislator model. Any
     # Anthropic model supports the native web-search tool; for an OpenAI executor
     # this must be a search-capable model (e.g. "gpt-4o-mini-search-preview").
-    web_search_model: str = "claude-haiku-4-5-20251001"
-    web_search_max_results: int = 5
+    web_search_model: str = "gpt-4o-mini-search-preview"
+    web_search_max_results: int = 10
 
     # --- Local-government data (SearchLocalGov bridge tool) ---
     # Per-region local datasets (assembly bills/petitions + minutes). The bridge
