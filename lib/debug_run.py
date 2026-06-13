@@ -105,6 +105,7 @@ def fake_llm(
     msg_history=None,
     temperature=0.75,
     max_tokens=4096,
+    reasoning_effort=None,
 ):
     global _research_actions
 
