@@ -1,0 +1,3143 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<title>会議録表示</title>
+<link rel="stylesheet" type="text/css" href="../js/libs/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="../css/simple_ab.css">
+<link rel="stylesheet" type="text/css" href="./css/customize.css">
+<script src="../js/libs/underscore-min.js"></script>
+<script src="../js/libs/moment.min.js"></script>
+<script src="../js/libs/jquery.min.js"></script>
+<script src="../js/libs/jquery-ui.min.js"></script>
+<script src="../js/libs/jquery.cookie.js"></script>
+<script src="../js/libs/handlebars.js"></script>
+<script src="../js/libs/jquery.zclip.js"></script>
+<script src="../js/release/namespace.js"></script>
+<script src="../js/release/config.js"></script>
+<script src="../js/release/util.js"></script>
+<script src="../js/release/component_ab.js"></script>
+<script src="../js/release/dialog_ab.js"></script>
+<script src="../js/release/template_ab.js"></script>
+<script src="../js/release/app.js"></script>
+<script src="../js/release/pages_ab.js"></script>
+<script src="./js/tenant.js"></script>
+<script src="./js/message.js"></script>
+<script src="./js/option.js"></script>
+<script src="../js/libs/jquery.zclip.js"></script>
+</head>
+<body class="blue sp-blue" id="solid">
+	<div id="baseframe">
+		<header>
+		<a id="blockskip" href="#outputframe-minute">メインコンテンツへ移動</a>
+		<div class="he-bar-minute back-thema1">
+			<button type="button" id="btn-root" class="but-small sbut-back-silver bd-thema sall-spacer">トップへ</button>
+			<button type="button" id="btn-help" class="but-small sbut-back-silver bd-thema sall-spacer">ヘルプ</button>
+			
+		</div>
+		<div class="he-txt-minute">
+			<h1>
+				<span id="council-title">横浜市&nbsp;&nbsp;令和　４年第２回定例会&nbsp;&nbsp;05月13日－06号</span>
+				
+			</h1>			
+		</div>
+		<div class="he-but">
+			<button type="button" id="btn-council-list" class="but-nomal but-back-silver bd-thema sall-spacer">会議一覧へ</button>
+			
+			<button type="button" id="btn-schedule" class="but-nomal but-back-silver bd-thema sall-spacer">日程一覧へ</button>
+		</div>
+		<div class="he-rbut-minute">
+			
+		</div>
+		</header>
+		<nav>
+			<div class="me-bar back-thema2" id="menu-tab-list"><button type="button" id="tab-minute-plain" class="tab bd-thema sr-spacer tab-back-thema on-tab" data-skey="1">会議録</button><button type="button" id="tab-minute-list" class="tab tab-back-silver bd-thema sr-spacer" data-skey="2">発言一覧</button><button type="button" id="tab-minute-speech" class="tab tab-back-silver bd-thema sr-spacer" data-skey="3">発言単位</button><button type="button" id="tab-minute-twin" class="tab tab-back-silver bd-thema sr-spacer" data-skey="4">発言単位</button><h2 id="lab-guide-message" class="me-insut back-thema bd-thema" data-skey="6">
+					<label id="lab-guide-message-plain" style="">会議録を表示します。</label>
+					<label id="lab-guide-message-list" style="display: none;">発言者の発言を一覧表で表示します。</label>
+					<label id="lab-guide-message-speech" style="display: none;">発言者の発言を発言単位に表示します。</label>
+					<label id="lab-guide-message-twin" style="display: none;">発言者の一覧と会議録の全文を表示します。</label>
+				</h2>
+				
+				
+			</div>
+			<div class="shadow"></div>
+		</nav>
+		<div id="outputframe-minute">
+			<p id="v-message" class="blink-msg fore-red tb-spacer"></p>
+			<div class="lst-mess no-print">
+				<span class="fore-red" id="hit-message" style="display: none;">　</span>
+			</div>
+			<div class="lst-siz-only lst-siz-over no-print">
+					<button type="button" id="btn-font-large" class="but-small sbut-back-silver bd-thema sall-spacer">文字拡大</button>
+					<button type="button" id="btn-font-small" class="but-small sbut-back-silver bd-thema sall-spacer">文字縮小</button>
+			</div>
+			<form action="#" id="plainForm" method="get" accept-charset="utf-8" style="">
+				<p class="p-guide-message-post no-print">「付箋アイコン」・・・対象の発言、または会議に登録されている付箋を表示します。</p>
+				<div id="plain-minute" class="back-white-shadow bd-thema"><nav>
+	<div class="info-bar back-thema bd-thema minute-list" id="plain_0">
+		<button id="btn-url" type="button" class="btn-view-url but-small sbut-back-silver bd-thema sall-spacer">URL表示</button>
+		<button id="btn-print" type="button" class="but-small sbut-back-silver bd-thema sall-spacer">印刷</button>
+	</div>
+</nav>
+<div>
+	<div class="info-txt back-white-shadow bd-thema">
+		<div class="output-data all-spacer">
+			<div><pre>令和　４年第２回定例会
+
+　　　　　　　　　　　　　　第２回
+　　　　　　　　　　横浜市会　　　会議録（第６号）
+　　　　　　　　　　　　　　定例会
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　　　　　　　　　　議事日程第７号
+　　　　　　　　令和４年５月13日（金）午前10時開議
+　第１　会期の決定
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　第２　常任委員の選任
+　第３　常任委員会委員長及び同副委員長２人の選挙
+　第４　特別委員会報告書
+　第５　特別委員の選任
+　第６　特別委員会委員長及び同副委員長２人の選挙
+　第７　市会運営委員の選任
+　第７　市会運営委員会委員長及び同副委員長２人の選挙
+　　　　　　　　　　　　　　議事日程第８号
+　第９　神奈川県内広域水道企業団議会議員４人の選挙
+　第10　神奈川県後期高齢者医療広域連合議会議員７人の選挙
+　第11　市第23号議案　横浜市監査委員の選任
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議員（85人）
+　　　　　　　　　　　　　　　　　　　　　鴨志田啓介君
+　　　　　　　　　　　　　　　　　　　　　山田一誠君
+　　　　　　　　　　　　　　　　　　　　　青木亮祐君
+　　　　　　　　　　　　　　　　　　　　　福地　茂君
+　　　　　　　　　　　　　　　　　　　　　長谷川えつこ君
+　　　　　　　　　　　　　　　　　　　　　森　ひろたか君
+　　　　　　　　　　　　　　　　　　　　　大野トモイ君
+　　　　　　　　　　　　　　　　　　　　　佐久間　衛君
+　　　　　　　　　　　　　　　　　　　　　木内秀一君
+　　　　　　　　　　　　　　　　　　　　　久保和弘君
+　　　　　　　　　　　　　　　　　　　　　平田いくよ君
+　　　　　　　　　　　　　　　　　　　　　東　みちよ君
+　　　　　　　　　　　　　　　　　　　　　川口　広君
+　　　　　　　　　　　　　　　　　　　　　長谷川琢磨君
+　　　　　　　　　　　　　　　　　　　　　伊波俊之助君
+　　　　　　　　　　　　　　　　　　　　　伏見幸枝君
+　　　　　　　　　　　　　　　　　　　　　山浦英太君
+　　　　　　　　　　　　　　　　　　　　　梶尾　明君
+　　　　　　　　　　　　　　　　　　　　　ふじい芳明君
+　　　　　　　　　　　　　　　　　　　　　田中ゆき君
+　　　　　　　　　　　　　　　　　　　　　竹野内　猛君
+　　　　　　　　　　　　　　　　　　　　　みわ智恵美君
+　　　　　　　　　　　　　　　　　　　　　北谷まり君
+　　　　　　　　　　　　　　　　　　　　　宇佐美さやか君
+　　　　　　　　　　　　　　　　　　　　　小松範昭君
+　　　　　　　　　　　　　　　　　　　　　山本たかし君
+　　　　　　　　　　　　　　　　　　　　　草間　剛君
+　　　　　　　　　　　　　　　　　　　　　磯部圭太君
+　　　　　　　　　　　　　　　　　　　　　遊佐大輔君
+　　　　　　　　　　　　　　　　　　　　　藤代哲夫君
+　　　　　　　　　　　　　　　　　　　　　有村俊彦君
+　　　　　　　　　　　　　　　　　　　　　大岩真善和君
+　　　　　　　　　　　　　　　　　　　　　藤崎浩太郎君
+　　　　　　　　　　　　　　　　　　　　　行田朝仁君
+　　　　　　　　　　　　　　　　　　　　　中島光徳君
+　　　　　　　　　　　　　　　　　　　　　安西英俊君
+　　　　　　　　　　　　　　　　　　　　　白井正子君
+　　　　　　　　　　　　　　　　　　　　　古谷靖彦君
+　　　　　　　　　　　　　　　　　　　　　二井くみよ君
+　　　　　　　　　　　　　　　　　　　　　横山勇太朗君
+　　　　　　　　　　　　　　　　　　　　　高橋のりみ君
+　　　　　　　　　　　　　　　　　　　　　輿石且子君
+　　　　　　　　　　　　　　　　　　　　　黒川　勝君
+　　　　　　　　　　　　　　　　　　　　　渡邊忠則君
+　　　　　　　　　　　　　　　　　　　　　山下正人君
+　　　　　　　　　　　　　　　　　　　　　関　勝則君
+　　　　　　　　　　　　　　　　　　　　　麓　理恵君
+　　　　　　　　　　　　　　　　　　　　　望月高徳君
+　　　　　　　　　　　　　　　　　　　　　荻原隆宏君
+　　　　　　　　　　　　　　　　　　　　　望月康弘君
+　　　　　　　　　　　　　　　　　　　　　竹内康洋君
+　　　　　　　　　　　　　　　　　　　　　尾崎　太君
+　　　　　　　　　　　　　　　　　　　　　岩崎ひろし君
+　　　　　　　　　　　　　　　　　　　　　河治民夫君
+　　　　　　　　　　　　　　　　　　　　　坂本勝司君
+　　　　　　　　　　　　　　　　　　　　　豊田有希君
+　　　　　　　　　　　　　　　　　　　　　酒井　誠君
+　　　　　　　　　　　　　　　　　　　　　渋谷　健君
+　　　　　　　　　　　　　　　　　　　　　大桑正貴君
+　　　　　　　　　　　　　　　　　　　　　斉藤達也君
+　　　　　　　　　　　　　　　　　　　　　鈴木太郎君
+　　　　　　　　　　　　　　　　　　　　　瀬之間康浩君
+　　　　　　　　　　　　　　　　　　　　　梶村　充君
+　　　　　　　　　　　　　　　　　　　　　今野典人君
+　　　　　　　　　　　　　　　　　　　　　大山しょうじ君
+　　　　　　　　　　　　　　　　　　　　　中山大輔君
+　　　　　　　　　　　　　　　　　　　　　福島直子君
+　　　　　　　　　　　　　　　　　　　　　高橋正治君
+　　　　　　　　　　　　　　　　　　　　　斉藤伸一君
+　　　　　　　　　　　　　　　　　　　　　斎藤真二君
+　　　　　　　　　　　　　　　　　　　　　大貫憲夫君
+　　　　　　　　　　　　　　　　　　　　　荒木由美子君
+　　　　　　　　　　　　　　　　　　　　　こがゆ康弘君
+　　　　　　　　　　　　　　　　　　　　　井上さくら君
+　　　　　　　　　　　　　　　　　　　　　松本　研君
+　　　　　　　　　　　　　　　　　　　　　横山正人君
+　　　　　　　　　　　　　　　　　　　　　佐藤祐文君
+　　　　　　　　　　　　　　　　　　　　　清水富雄君
+　　　　　　　　　　　　　　　　　　　　　佐藤　茂君
+　　　　　　　　　　　　　　　　　　　　　田野井一雄君
+　　　　　　　　　　　　　　　　　　　　　花上喜代志君
+　　　　　　　　　　　　　　　　　　　　　谷田部孝一君
+　　　　　　　　　　　　　　　　　　　　　仁田昌寿君
+　　　　　　　　　　　　　　　　　　　　　加藤広人君
+　　　　　　　　　　　　　　　　　　　　　源波正保君
+　欠員（１人）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席説明員
+　　　　　　　　市長　　　　　　　　　　　山中竹春君
+　　　　　　　　副市長　　　　　　　　　　平原敏英君
+　　　　　　　　副市長　　　　　　　　　　城　博俊君
+　　　　　　　　副市長　　　　　　　　　　伊地知英弘君
+　　　　　　　　副市長　　　　　　　　　　大久保智子君
+　　　　　　　　技監　　　　　　　　　　　小池政則君
+　　　　　　　　危機管理監　　　　　　　　高坂哲也君
+　　　　　　　　温暖化対策統括本部長　　　石川武史君
+　　　　　　　　デジタル統括本部長　　　　下田康晴君
+　　　　　　　　政策局長　　　　　　　　　鈴木和宏君
+　　　　　　　　総務局長　　　　　　　　　松浦　淳君
+　　　　　　　　財政局長　　　　　　　　　近野真一君
+　　　　　　　　国際局長　　　　　　　　　橋本　徹君
+　　　　　　　　市民局長　　　　　　　　　石内　亮君
+　　　　　　　　文化観光局副局長
+　　　　　　　　　　　　　　　　　　　　　小林　仁君
+　　　　　　　　（総務部長）
+　　　　　　　　経済局長　　　　　　　　　星崎雅代君
+　　　　　　　　こども青少年局長　　　　　吉川直友君
+　　　　　　　　健康福祉局長　　　　　　　佐藤広毅君
+　　　　　　　　医療局長　　　　　　　　　修理　淳君
+　　　　　　　　病院経営本部長　　　　　　平原史樹君
+　　　　　　　　環境創造局長　　　　　　　遠藤賢也君
+　　　　　　　　資源循環局長　　　　　　　金澤貞幸君
+　　　　　　　　建築局長　　　　　　　　　鵜澤聡明君
+　　　　　　　　都市整備局長　　　　　　　堀田和宏君
+　　　　　　　　道路局長　　　　　　　　　高瀬卓弥君
+　　　　　　　　港湾局長　　　　　　　　　中野裕也君
+　　　　　　　　消防局長　　　　　　　　　平中　隆君
+　　　　　　　　水道局長　　　　　　　　　山岡秀一君
+　　　　　　　　交通局長　　　　　　　　　三村庄一君
+　　　　　　　　会計管理者
+　　　　　　　　　　　　　　　　　　　　　青木幸雄君
+　　　　　　　　（会計室長）
+　　　　　　　　教育長　　　　　　　　　　鯉渕信也君
+　　　　　　　　選挙管理委員会委員長　　　菅野義矩君
+　　　　　　　　選挙管理委員会
+　　　　　　　　　　　　　　　　　　　　　小磯行生君
+　　　　　　　　事務局長
+　　　　　　　　人事委員会委員長
+　　　　　　　　　　　　　　　　　　　　　大貫一幸君
+　　　　　　　　職務代理者
+　　　　　　　　人事委員会事務局長　　　　伊藤友道君
+　　　　　　　　代表監査委員　　　　　　　藤野次雄君
+　　　　　　　　監査事務局長　　　　　　　栗谷静哉君
+　　　　　　　　政策局秘書部長　　　　　　橋本　岳君
+　　　　　　　　総務局副局長
+　　　　　　　　　　　　　　　　　　　　　佐藤康博君
+　　　　　　　　（総務部長）
+　　　　　　　　教育次長　　　　　　　　　木村　奨君
+　　　　　　　　総務局総務課長　　　　　　藤岡謙二君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議会局職員
+　　　　　　　　局長　　　　　　　　　　　屋代英明君
+　　　　　　　　副局長
+　　　　　　　　　　　　　　　　　　　　　豊　基信君
+　　　　　　　　（市会事務部長）
+　　　　　　　　政策調査等担当部長　　　　濃野　誠君
+　　　　　　　　総務課長　　　　　　　　　増田政博君
+　　　　　　　　議事課長　　　　　　　　　本多　修君
+　　　　　　　　調整等担当課長　　　　　　小島康文君
+　　　　　　　　政策調査課長　　　　　　　山根伸哉君
+　　　　　　　　法制等担当課長　　　　　　石津清美君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　午前10時00分開会
+</pre><pre>○議長（清水富雄君）　現在着席議員数は85人であります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　ただいまより令和４年第２回市会定例会を開会いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　これより本日の会議を開きます。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　会議録署名者は、磯部圭太君と北谷まり君にお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　この際、諸般の報告を申し上げます。
+　市長から横浜市国民保護計画の変更について報告がありましたので、さきに配付いたしておきました。（資料編１ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、市会議員待遇者及び功労者大久保純男氏は、去る４月２日に逝去されました。誠に哀悼の至りに堪えません。
+　ここに謹んで御冥福をお祈りし、弔意を表します。
+　以上で諸般の報告を終わります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程の追加について申し上げます。
+　お手元に配付いたしました議事日程第８号を本日の日程に追加し、順次御審議いただきますので、御了承願います。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　これより日程に入ります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　日程第１、会期の決定を議題といたします。
+　お諮りいたします。
+　本定例会の会期は本日から６月７日までの26日間にいたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、会期は６月７日までの26日間と決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第２、常任委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編144ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第３、常任委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　政策・総務・財政委員会委員長に大桑正貴君
+　　　　　　同副委員長に大岩真善和君と望月康弘君
+　　国際・経済・港湾委員会委員長に中山大輔君
+　　　　　　同副委員長に高橋のりみ君と斎藤真二君
+　　市民・文化観光・消防委員会委員長に中島光徳君
+　　　　　　同副委員長に山本たかし君と望月高徳君
+　　こども青少年・教育委員会委員長に麓理恵君
+　　　　　　同副委員長に関勝則君と藤代哲夫君
+　　健康福祉・医療委員会委員長に斉藤伸一君
+　　　　　　同副委員長に山下正人君と大山しょうじ君
+　　温暖化対策・環境創造・資源循環委員会委員長に横山勇太朗君
+　　　　　　同副委員長に谷田部孝一君と源波正保君
+　　建築・都市整備・道路委員会委員長に磯部圭太君
+　　　　　　同副委員長に渋谷健君とみわ智恵美君
+　　水道・交通委員会委員長に小松範昭君
+　　　　　　同副委員長に草間剛君と岩崎ひろし君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第４、特別委員会報告書を議題といたします。
+　大都市行財政制度特別委員会外６特別委員会から付議事件の調査に基づく報告書が提出されましたので、お手元に配付いたしておきました。（資料編145ページ参照）
+　本件につきましては、各委員会での一致を得て報告されたものでありますので、以上で御了承願います。
+　この際、申し上げます。
+　ただいま決定いたしました特別委員会報告書７件につきましては、私から市長へ送付いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第５、特別委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編395ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第６、特別委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　大都市行財政制度特別委員会委員長に長谷川琢磨君
+　　　　　　同副委員長に森ひろたか君と福島直子君
+　　基地対策特別委員会委員長に伏見幸枝君
+　　　　　　同副委員長に福地茂君と宇佐美さやか君
+　　減災対策推進特別委員会委員長に行田朝仁君
+　　　　　　同副委員長に青木亮祐君と長谷川えつこ君
+　　新たな都市活力推進特別委員会委員長に荻原隆宏君
+　　　　　　同副委員長に酒井誠君と遊佐大輔君
+　　健康づくり・スポーツ推進特別委員会委員長に伊波俊之助君
+　　　　　　同副委員長に東みちよ君と大野トモイ君
+　　郊外部再生・活性化特別委員会委員長に川口広君
+　　　　　　同副委員長に鴨志田啓介君と竹野内猛君
+　　デジタル化推進特別委員会委員長に山浦英太君
+　　　　　　同副委員長に山田一誠君と尾崎太君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第７、市会運営委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編396ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第８、市会運営委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　委員長に黒川勝君、副委員長に有村俊彦君と安西英俊君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第９、神奈川県内広域水道企業団議会議員４人の選挙を行います。
+　本件は、本市会から選出されております同企業団議会議員４人がこのたび辞職されましたので、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　瀬之間康浩君、関勝則君、藤崎浩太郎君、竹内康洋君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第10、神奈川県後期高齢者医療広域連合議会議員７人の選挙を行います。
+　本件は、本市会から選出されております同広域連合議会議員７人の任期が令和４年６月30日に満了することに伴い、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　磯部圭太君、伏見幸枝君、梶尾明君、花上喜代志君、尾崎太君、行田朝仁君、白井正子君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　次に、日程第11、市第23号議案を議題といたします。
+　なお、本案につきましては、地方自治法第117条の規定により、該当の方の退席を求めます。
+　　　　　〔該当者退席〕
+</pre><pre>○議長（清水富雄君）　案はお手元に配付いたしておきました。
+　案の朗読は省略いたします。
+　市長から説明のため発言を求められておりますので、これを許します。山中市長。
+　　　　　〔市長　山中竹春君登壇〕
+</pre><pre>◎市長（山中竹春君）　市第23号議案について御説明いたします。
+　本案は、本市監査委員の選任に関する議案でありまして、市会議員のうちから選任された監査委員横山正人氏及び中山大輔氏から退職の願い出がありましたので、その後任者として松本研氏及び今野典人氏を選任いたしたく、地方自治法第196条第１項の規定により御同意をお願いするものであります。
+　よろしくお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　これより採決いたします。
+　採決の方法は、押しボタンによる記名投票といたします。
+　本案は、委員会付託を省略し、案のとおり同意することについて投票願います。
+　　　　　〔投票開始〕
+</pre><pre>○議長（清水富雄君）　押し間違いはございませんか。
+　　　　　〔「なし」と呼ぶ者あり〕
+</pre><pre>○議長（清水富雄君）　これにて投票を終了いたします。
+　　　　　〔投票終了〕
+</pre><pre>○議長（清水富雄君）　総数82、賛成71、反対11。（資料編398ページ参照）
+　よって、同意することに決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre><pre>○議長（清水富雄君）　これをもって本日の日程は全部終了いたしましたので、散会いたします。
+　　　　　午前10時16分散会
+　　　　　　市会議長　　　　清水富雄
+　　　　　　市会議員　　　　磯部圭太
+　　　　　　同　　　　　　　北谷まり
+</pre></div>
+		</div>
+	</div>
+</div>
+</div>
+			</form>
+			<form action="#" id="listForm" method="get" accept-charset="utf-8" style="display: none;">
+				<div class="lr-lay after-siz">
+						<div class="no-print">
+							<p class="p-guide-message-check">「全選択(全解除)」ボタン・・・発言一覧のすべての選択チェックボックスを選択(または選択解除)します。</p>
+							<p class="p-guide-message-fil">「選択／付箋チェックボックス」、「発言種別／発言者プルダウン」・・・発言の絞り込み表示ができます。</p>
+							<p class="p-guide-message-page">「頁▶(◀)」ボタン・・・発言一覧の選択列、付箋列を非表示(表示)にします。</p>
+							<p class="p-guide-message-allopen">「全て開く(全て閉じる)」ボタン・・・全ての発言を表示(非表示)します。</p>
+							<p class="p-guide-message-post">「付箋アイコン」・・・対象の発言、または会議に登録されている付箋を表示します。</p>
+							<p class="p-guide-message-open">「▼(▲)」ボタン・・・対象の発言を表示(非表示)します。</p>						
+						</div>
+						<div class="lst-ope">
+							
+							<button type="button" class="btn-all-select but-small sbut-back-silver bd-thema sall-spacer">全選択</button>
+							<button type="button" class="btn-all-clear but-small sbut-back-silver bd-thema sall-spacer">全解除</button>
+						</div>
+
+						<fieldset class="no-border">
+						<legend class="no-display">発言一覧</legend>
+						<table id="lst-minute" class="lst lst-fixed"><caption>発言一覧</caption>
+<thead>
+	<tr class="back-thema">
+		<th class="th-check acc-cols lst-c-layout bd-thema">
+			<label>選択<br>
+				<input type="checkbox" class="chk_select chk bd-thema narrow-chk">
+			</label>
+		</th>
+						<th class="th-page lst-c-layout bd-thema">頁<br>
+			<button type="button" class="but-arrow abut-back-silver bd-thema arrow-cols" title="表示">▶</button>
+		</th>
+		<th class="th-type bd-thema">
+			<label>発言種別<br>
+				<select class="slt_minute_type slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="名簿">名簿</option><option value="○議長">○議長</option><option value="◎答弁">◎答弁</option></select>
+			</label>
+		</th>
+		<th class="th-speaker bd-thema">
+			<label>発言者<br>
+				<select class="slt_speaker slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="（名簿）">（名簿）</option><option value="議長（清水富雄君）">議長（清水富雄君）</option><option value="市長（山中竹春君）">市長（山中竹春君）</option></select>
+			</label>
+		</th>
+		<th class="th-search-result th-right-span bd-thema">発言<br>
+			<button type="button" id="btn-all-speech-open" class="but-small sbut-back-silver bd-thema">全て開く</button>
+			<button type="button" id="btn-all-speech-close" class="but-small sbut-back-silver bd-thema">全て閉じる</button>
+		</th>
+		<th class="th-arrow bd-thema"></th>
+	</tr>
+</thead>
+<tbody>
+	<tr class="minute-list back-white-shadow" id="list_0">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="0" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.1</td>
+		<td rowspan="2" class="bd-thema">名簿</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">（名簿）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white-shadow">
+		<td class="detail-speech-list bd-thema" id="text_list_0"><div class="detail-ellipsis">令和　４年第２回定例会
+
+　　　　　　　　　　　　　　第２回
+　　　　　　　　　　横浜市会　　　会議録（第６号）
+　　　　　　　　　　　　　　定例会
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　　　　　　　　　　議事日程第７号
+　　　　　　　　令和４年５月13日（金）午前10時開議
+　第１　会期の決定
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　第２　常任委員の選任
+　第３　常任委員会委員長及び同副委員長２人の選挙
+　第４　特別委員会報告書
+　第５　特別委員の選任
+　第６　特別委員会委員長及び同副委員長２人の選挙
+　第７　市会運営委員の選任
+　第７　市会運営委員会委員長及び同副委員長２人の選挙
+　　　　　　　　　　　　　　議事日程第８号
+　第９　神奈川県内広域水道企業団議会議員４人の選挙
+　第10　神奈川県後期高齢者医療広域連合議会議員７人の選挙
+　第11　市第23号議案　横浜市監査委員の選任
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議員（85人）
+　　　　　　　　　　　　　　　　　　　　　鴨志田啓介君
+　　　　　　　　　　　　　　　　　　　　　山田一誠君
+　　　　　　　　　　　　　　　　　　　　　青木亮祐君
+　　　　　　　　　　　　　　　　　　　　　福地　茂君
+　　　　　　　　　　　　　　　　　　　　　長谷川えつこ君
+　　　　　　　　　　　　　　　　　　　　　森　ひろたか君
+　　　　　　　　　　　　　　　　　　　　　大野トモイ君
+　　　　　　　　　　　　　　　　　　　　　佐久間　衛君
+　　　　　　　　　　　　　　　　　　　　　木内秀一君
+　　　　　　　　　　　　　　　　　　　　　久保和弘君
+　　　　　　　　　　　　　　　　　　　　　平田いくよ君
+　　　　　　　　　　　　　　　　　　　　　東　みちよ君
+　　　　　　　　　　　　　　　　　　　　　川口　広君
+　　　　　　　　　　　　　　　　　　　　　長谷川琢磨君
+　　　　　　　　　　　　　　　　　　　　　伊波俊之助君
+　　　　　　　　　　　　　　　　　　　　　伏見幸枝君
+　　　　　　　　　　　　　　　　　　　　　山浦英太君
+　　　　　　　　　　　　　　　　　　　　　梶尾　明君
+　　　　　　　　　　　　　　　　　　　　　ふじい芳明君
+　　　　　　　　　　　　　　　　　　　　　田中ゆき君
+　　　　　　　　　　　　　　　　　　　　　竹野内　猛君
+　　　　　　　　　　　　　　　　　　　　　みわ智恵美君
+　　　　　　　　　　　　　　　　　　　　　北谷まり君
+　　　　　　　　　　　　　　　　　　　　　宇佐美さやか君
+　　　　　　　　　　　　　　　　　　　　　小松範昭君
+　　　　　　　　　　　　　　　　　　　　　山本たかし君
+　　　　　　　　　　　　　　　　　　　　　草間　剛君
+　　　　　　　　　　　　　　　　　　　　　磯部圭太君
+　　　　　　　　　　　　　　　　　　　　　遊佐大輔君
+　　　　　　　　　　　　　　　　　　　　　藤代哲夫君
+　　　　　　　　　　　　　　　　　　　　　有村俊彦君
+　　　　　　　　　　　　　　　　　　　　　大岩真善和君
+　　　　　　　　　　　　　　　　　　　　　藤崎浩太郎君
+　　　　　　　　　　　　　　　　　　　　　行田朝仁君
+　　　　　　　　　　　　　　　　　　　　　中島光徳君
+　　　　　　　　　　　　　　　　　　　　　安西英俊君
+　　　　　　　　　　　　　　　　　　　　　白井正子君
+　　　　　　　　　　　　　　　　　　　　　古谷靖彦君
+　　　　　　　　　　　　　　　　　　　　　二井くみよ君
+　　　　　　　　　　　　　　　　　　　　　横山勇太朗君
+　　　　　　　　　　　　　　　　　　　　　高橋のりみ君
+　　　　　　　　　　　　　　　　　　　　　輿石且子君
+　　　　　　　　　　　　　　　　　　　　　黒川　勝君
+　　　　　　　　　　　　　　　　　　　　　渡邊忠則君
+　　　　　　　　　　　　　　　　　　　　　山下正人君
+　　　　　　　　　　　　　　　　　　　　　関　勝則君
+　　　　　　　　　　　　　　　　　　　　　麓　理恵君
+　　　　　　　　　　　　　　　　　　　　　望月高徳君
+　　　　　　　　　　　　　　　　　　　　　荻原隆宏君
+　　　　　　　　　　　　　　　　　　　　　望月康弘君
+　　　　　　　　　　　　　　　　　　　　　竹内康洋君
+　　　　　　　　　　　　　　　　　　　　　尾崎　太君
+　　　　　　　　　　　　　　　　　　　　　岩崎ひろし君
+　　　　　　　　　　　　　　　　　　　　　河治民夫君
+　　　　　　　　　　　　　　　　　　　　　坂本勝司君
+　　　　　　　　　　　　　　　　　　　　　豊田有希君
+　　　　　　　　　　　　　　　　　　　　　酒井　誠君
+　　　　　　　　　　　　　　　　　　　　　渋谷　健君
+　　　　　　　　　　　　　　　　　　　　　大桑正貴君
+　　　　　　　　　　　　　　　　　　　　　斉藤達也君
+　　　　　　　　　　　　　　　　　　　　　鈴木太郎君
+　　　　　　　　　　　　　　　　　　　　　瀬之間康浩君
+　　　　　　　　　　　　　　　　　　　　　梶村　充君
+　　　　　　　　　　　　　　　　　　　　　今野典人君
+　　　　　　　　　　　　　　　　　　　　　大山しょうじ君
+　　　　　　　　　　　　　　　　　　　　　中山大輔君
+　　　　　　　　　　　　　　　　　　　　　福島直子君
+　　　　　　　　　　　　　　　　　　　　　高橋正治君
+　　　　　　　　　　　　　　　　　　　　　斉藤伸一君
+　　　　　　　　　　　　　　　　　　　　　斎藤真二君
+　　　　　　　　　　　　　　　　　　　　　大貫憲夫君
+　　　　　　　　　　　　　　　　　　　　　荒木由美子君
+　　　　　　　　　　　　　　　　　　　　　こがゆ康弘君
+　　　　　　　　　　　　　　　　　　　　　井上さくら君
+　　　　　　　　　　　　　　　　　　　　　松本　研君
+　　　　　　　　　　　　　　　　　　　　　横山正人君
+　　　　　　　　　　　　　　　　　　　　　佐藤祐文君
+　　　　　　　　　　　　　　　　　　　　　清水富雄君
+　　　　　　　　　　　　　　　　　　　　　佐藤　茂君
+　　　　　　　　　　　　　　　　　　　　　田野井一雄君
+　　　　　　　　　　　　　　　　　　　　　花上喜代志君
+　　　　　　　　　　　　　　　　　　　　　谷田部孝一君
+　　　　　　　　　　　　　　　　　　　　　仁田昌寿君
+　　　　　　　　　　　　　　　　　　　　　加藤広人君
+　　　　　　　　　　　　　　　　　　　　　源波正保君
+　欠員（１人）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席説明員
+　　　　　　　　市長　　　　　　　　　　　山中竹春君
+　　　　　　　　副市長　　　　　　　　　　平原敏英君
+　　　　　　　　副市長　　　　　　　　　　城　博俊君
+　　　　　　　　副市長　　　　　　　　　　伊地知英弘君
+　　　　　　　　副市長　　　　　　　　　　大久保智子君
+　　　　　　　　技監　　　　　　　　　　　小池政則君
+　　　　　　　　危機管理監　　　　　　　　高坂哲也君
+　　　　　　　　温暖化対策統括本部長　　　石川武史君
+　　　　　　　　デジタル統括本部長　　　　下田康晴君
+　　　　　　　　政策局長　　　　　　　　　鈴木和宏君
+　　　　　　　　総務局長　　　　　　　　　松浦　淳君
+　　　　　　　　財政局長　　　　　　　　　近野真一君
+　　　　　　　　国際局長　　　　　　　　　橋本　徹君
+　　　　　　　　市民局長　　　　　　　　　石内　亮君
+　　　　　　　　文化観光局副局長
+　　　　　　　　　　　　　　　　　　　　　小林　仁君
+　　　　　　　　（総務部長）
+　　　　　　　　経済局長　　　　　　　　　星崎雅代君
+　　　　　　　　こども青少年局長　　　　　吉川直友君
+　　　　　　　　健康福祉局長　　　　　　　佐藤広毅君
+　　　　　　　　医療局長　　　　　　　　　修理　淳君
+　　　　　　　　病院経営本部長　　　　　　平原史樹君
+　　　　　　　　環境創造局長　　　　　　　遠藤賢也君
+　　　　　　　　資源循環局長　　　　　　　金澤貞幸君
+　　　　　　　　建築局長　　　　　　　　　鵜澤聡明君
+　　　　　　　　都市整備局長　　　　　　　堀田和宏君
+　　　　　　　　道路局長　　　　　　　　　高瀬卓弥君
+　　　　　　　　港湾局長　　　　　　　　　中野裕也君
+　　　　　　　　消防局長　　　　　　　　　平中　隆君
+　　　　　　　　水道局長　　　　　　　　　山岡秀一君
+　　　　　　　　交通局長　　　　　　　　　三村庄一君
+　　　　　　　　会計管理者
+　　　　　　　　　　　　　　　　　　　　　青木幸雄君
+　　　　　　　　（会計室長）
+　　　　　　　　教育長　　　　　　　　　　鯉渕信也君
+　　　　　　　　選挙管理委員会委員長　　　菅野義矩君
+　　　　　　　　選挙管理委員会
+　　　　　　　　　　　　　　　　　　　　　小磯行生君
+　　　　　　　　事務局長
+　　　　　　　　人事委員会委員長
+　　　　　　　　　　　　　　　　　　　　　大貫一幸君
+　　　　　　　　職務代理者
+　　　　　　　　人事委員会事務局長　　　　伊藤友道君
+　　　　　　　　代表監査委員　　　　　　　藤野次雄君
+　　　　　　　　監査事務局長　　　　　　　栗谷静哉君
+　　　　　　　　政策局秘書部長　　　　　　橋本　岳君
+　　　　　　　　総務局副局長
+　　　　　　　　　　　　　　　　　　　　　佐藤康博君
+　　　　　　　　（総務部長）
+　　　　　　　　教育次長　　　　　　　　　木村　奨君
+　　　　　　　　総務局総務課長　　　　　　藤岡謙二君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議会局職員
+　　　　　　　　局長　　　　　　　　　　　屋代英明君
+　　　　　　　　副局長
+　　　　　　　　　　　　　　　　　　　　　豊　基信君
+　　　　　　　　（市会事務部長）
+　　　　　　　　政策調査等担当部長　　　　濃野　誠君
+　　　　　　　　総務課長　　　　　　　　　増田政博君
+　　　　　　　　議事課長　　　　　　　　　本多　修君
+　　　　　　　　調整等担当課長　　　　　　小島康文君
+　　　　　　　　政策調査課長　　　　　　　山根伸哉君
+　　　　　　　　法制等担当課長　　　　　　石津清美君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　午前10時00分開会
+</div><div class="detail-genuine" style="display: none;"><pre>令和　４年第２回定例会
+
+　　　　　　　　　　　　　　第２回
+　　　　　　　　　　横浜市会　　　会議録（第６号）
+　　　　　　　　　　　　　　定例会
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　　　　　　　　　　議事日程第７号
+　　　　　　　　令和４年５月13日（金）午前10時開議
+　第１　会期の決定
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　第２　常任委員の選任
+　第３　常任委員会委員長及び同副委員長２人の選挙
+　第４　特別委員会報告書
+　第５　特別委員の選任
+　第６　特別委員会委員長及び同副委員長２人の選挙
+　第７　市会運営委員の選任
+　第７　市会運営委員会委員長及び同副委員長２人の選挙
+　　　　　　　　　　　　　　議事日程第８号
+　第９　神奈川県内広域水道企業団議会議員４人の選挙
+　第10　神奈川県後期高齢者医療広域連合議会議員７人の選挙
+　第11　市第23号議案　横浜市監査委員の選任
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議員（85人）
+　　　　　　　　　　　　　　　　　　　　　鴨志田啓介君
+　　　　　　　　　　　　　　　　　　　　　山田一誠君
+　　　　　　　　　　　　　　　　　　　　　青木亮祐君
+　　　　　　　　　　　　　　　　　　　　　福地　茂君
+　　　　　　　　　　　　　　　　　　　　　長谷川えつこ君
+　　　　　　　　　　　　　　　　　　　　　森　ひろたか君
+　　　　　　　　　　　　　　　　　　　　　大野トモイ君
+　　　　　　　　　　　　　　　　　　　　　佐久間　衛君
+　　　　　　　　　　　　　　　　　　　　　木内秀一君
+　　　　　　　　　　　　　　　　　　　　　久保和弘君
+　　　　　　　　　　　　　　　　　　　　　平田いくよ君
+　　　　　　　　　　　　　　　　　　　　　東　みちよ君
+　　　　　　　　　　　　　　　　　　　　　川口　広君
+　　　　　　　　　　　　　　　　　　　　　長谷川琢磨君
+　　　　　　　　　　　　　　　　　　　　　伊波俊之助君
+　　　　　　　　　　　　　　　　　　　　　伏見幸枝君
+　　　　　　　　　　　　　　　　　　　　　山浦英太君
+　　　　　　　　　　　　　　　　　　　　　梶尾　明君
+　　　　　　　　　　　　　　　　　　　　　ふじい芳明君
+　　　　　　　　　　　　　　　　　　　　　田中ゆき君
+　　　　　　　　　　　　　　　　　　　　　竹野内　猛君
+　　　　　　　　　　　　　　　　　　　　　みわ智恵美君
+　　　　　　　　　　　　　　　　　　　　　北谷まり君
+　　　　　　　　　　　　　　　　　　　　　宇佐美さやか君
+　　　　　　　　　　　　　　　　　　　　　小松範昭君
+　　　　　　　　　　　　　　　　　　　　　山本たかし君
+　　　　　　　　　　　　　　　　　　　　　草間　剛君
+　　　　　　　　　　　　　　　　　　　　　磯部圭太君
+　　　　　　　　　　　　　　　　　　　　　遊佐大輔君
+　　　　　　　　　　　　　　　　　　　　　藤代哲夫君
+　　　　　　　　　　　　　　　　　　　　　有村俊彦君
+　　　　　　　　　　　　　　　　　　　　　大岩真善和君
+　　　　　　　　　　　　　　　　　　　　　藤崎浩太郎君
+　　　　　　　　　　　　　　　　　　　　　行田朝仁君
+　　　　　　　　　　　　　　　　　　　　　中島光徳君
+　　　　　　　　　　　　　　　　　　　　　安西英俊君
+　　　　　　　　　　　　　　　　　　　　　白井正子君
+　　　　　　　　　　　　　　　　　　　　　古谷靖彦君
+　　　　　　　　　　　　　　　　　　　　　二井くみよ君
+　　　　　　　　　　　　　　　　　　　　　横山勇太朗君
+　　　　　　　　　　　　　　　　　　　　　高橋のりみ君
+　　　　　　　　　　　　　　　　　　　　　輿石且子君
+　　　　　　　　　　　　　　　　　　　　　黒川　勝君
+　　　　　　　　　　　　　　　　　　　　　渡邊忠則君
+　　　　　　　　　　　　　　　　　　　　　山下正人君
+　　　　　　　　　　　　　　　　　　　　　関　勝則君
+　　　　　　　　　　　　　　　　　　　　　麓　理恵君
+　　　　　　　　　　　　　　　　　　　　　望月高徳君
+　　　　　　　　　　　　　　　　　　　　　荻原隆宏君
+　　　　　　　　　　　　　　　　　　　　　望月康弘君
+　　　　　　　　　　　　　　　　　　　　　竹内康洋君
+　　　　　　　　　　　　　　　　　　　　　尾崎　太君
+　　　　　　　　　　　　　　　　　　　　　岩崎ひろし君
+　　　　　　　　　　　　　　　　　　　　　河治民夫君
+　　　　　　　　　　　　　　　　　　　　　坂本勝司君
+　　　　　　　　　　　　　　　　　　　　　豊田有希君
+　　　　　　　　　　　　　　　　　　　　　酒井　誠君
+　　　　　　　　　　　　　　　　　　　　　渋谷　健君
+　　　　　　　　　　　　　　　　　　　　　大桑正貴君
+　　　　　　　　　　　　　　　　　　　　　斉藤達也君
+　　　　　　　　　　　　　　　　　　　　　鈴木太郎君
+　　　　　　　　　　　　　　　　　　　　　瀬之間康浩君
+　　　　　　　　　　　　　　　　　　　　　梶村　充君
+　　　　　　　　　　　　　　　　　　　　　今野典人君
+　　　　　　　　　　　　　　　　　　　　　大山しょうじ君
+　　　　　　　　　　　　　　　　　　　　　中山大輔君
+　　　　　　　　　　　　　　　　　　　　　福島直子君
+　　　　　　　　　　　　　　　　　　　　　高橋正治君
+　　　　　　　　　　　　　　　　　　　　　斉藤伸一君
+　　　　　　　　　　　　　　　　　　　　　斎藤真二君
+　　　　　　　　　　　　　　　　　　　　　大貫憲夫君
+　　　　　　　　　　　　　　　　　　　　　荒木由美子君
+　　　　　　　　　　　　　　　　　　　　　こがゆ康弘君
+　　　　　　　　　　　　　　　　　　　　　井上さくら君
+　　　　　　　　　　　　　　　　　　　　　松本　研君
+　　　　　　　　　　　　　　　　　　　　　横山正人君
+　　　　　　　　　　　　　　　　　　　　　佐藤祐文君
+　　　　　　　　　　　　　　　　　　　　　清水富雄君
+　　　　　　　　　　　　　　　　　　　　　佐藤　茂君
+　　　　　　　　　　　　　　　　　　　　　田野井一雄君
+　　　　　　　　　　　　　　　　　　　　　花上喜代志君
+　　　　　　　　　　　　　　　　　　　　　谷田部孝一君
+　　　　　　　　　　　　　　　　　　　　　仁田昌寿君
+　　　　　　　　　　　　　　　　　　　　　加藤広人君
+　　　　　　　　　　　　　　　　　　　　　源波正保君
+　欠員（１人）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席説明員
+　　　　　　　　市長　　　　　　　　　　　山中竹春君
+　　　　　　　　副市長　　　　　　　　　　平原敏英君
+　　　　　　　　副市長　　　　　　　　　　城　博俊君
+　　　　　　　　副市長　　　　　　　　　　伊地知英弘君
+　　　　　　　　副市長　　　　　　　　　　大久保智子君
+　　　　　　　　技監　　　　　　　　　　　小池政則君
+　　　　　　　　危機管理監　　　　　　　　高坂哲也君
+　　　　　　　　温暖化対策統括本部長　　　石川武史君
+　　　　　　　　デジタル統括本部長　　　　下田康晴君
+　　　　　　　　政策局長　　　　　　　　　鈴木和宏君
+　　　　　　　　総務局長　　　　　　　　　松浦　淳君
+　　　　　　　　財政局長　　　　　　　　　近野真一君
+　　　　　　　　国際局長　　　　　　　　　橋本　徹君
+　　　　　　　　市民局長　　　　　　　　　石内　亮君
+　　　　　　　　文化観光局副局長
+　　　　　　　　　　　　　　　　　　　　　小林　仁君
+　　　　　　　　（総務部長）
+　　　　　　　　経済局長　　　　　　　　　星崎雅代君
+　　　　　　　　こども青少年局長　　　　　吉川直友君
+　　　　　　　　健康福祉局長　　　　　　　佐藤広毅君
+　　　　　　　　医療局長　　　　　　　　　修理　淳君
+　　　　　　　　病院経営本部長　　　　　　平原史樹君
+　　　　　　　　環境創造局長　　　　　　　遠藤賢也君
+　　　　　　　　資源循環局長　　　　　　　金澤貞幸君
+　　　　　　　　建築局長　　　　　　　　　鵜澤聡明君
+　　　　　　　　都市整備局長　　　　　　　堀田和宏君
+　　　　　　　　道路局長　　　　　　　　　高瀬卓弥君
+　　　　　　　　港湾局長　　　　　　　　　中野裕也君
+　　　　　　　　消防局長　　　　　　　　　平中　隆君
+　　　　　　　　水道局長　　　　　　　　　山岡秀一君
+　　　　　　　　交通局長　　　　　　　　　三村庄一君
+　　　　　　　　会計管理者
+　　　　　　　　　　　　　　　　　　　　　青木幸雄君
+　　　　　　　　（会計室長）
+　　　　　　　　教育長　　　　　　　　　　鯉渕信也君
+　　　　　　　　選挙管理委員会委員長　　　菅野義矩君
+　　　　　　　　選挙管理委員会
+　　　　　　　　　　　　　　　　　　　　　小磯行生君
+　　　　　　　　事務局長
+　　　　　　　　人事委員会委員長
+　　　　　　　　　　　　　　　　　　　　　大貫一幸君
+　　　　　　　　職務代理者
+　　　　　　　　人事委員会事務局長　　　　伊藤友道君
+　　　　　　　　代表監査委員　　　　　　　藤野次雄君
+　　　　　　　　監査事務局長　　　　　　　栗谷静哉君
+　　　　　　　　政策局秘書部長　　　　　　橋本　岳君
+　　　　　　　　総務局副局長
+　　　　　　　　　　　　　　　　　　　　　佐藤康博君
+　　　　　　　　（総務部長）
+　　　　　　　　教育次長　　　　　　　　　木村　奨君
+　　　　　　　　総務局総務課長　　　　　　藤岡謙二君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議会局職員
+　　　　　　　　局長　　　　　　　　　　　屋代英明君
+　　　　　　　　副局長
+　　　　　　　　　　　　　　　　　　　　　豊　基信君
+　　　　　　　　（市会事務部長）
+　　　　　　　　政策調査等担当部長　　　　濃野　誠君
+　　　　　　　　総務課長　　　　　　　　　増田政博君
+　　　　　　　　議事課長　　　　　　　　　本多　修君
+　　　　　　　　調整等担当課長　　　　　　小島康文君
+　　　　　　　　政策調査課長　　　　　　　山根伸哉君
+　　　　　　　　法制等担当課長　　　　　　石津清美君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　午前10時00分開会
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_1">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="1" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.5</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_1"><div class="detail-ellipsis">○議長（清水富雄君）　現在着席議員数は85人であります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　現在着席議員数は85人であります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_2">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="2" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_2"><div class="detail-ellipsis">○議長（清水富雄君）　ただいまより令和４年第２回市会定例会を開会いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　ただいまより令和４年第２回市会定例会を開会いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_3">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="3" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_3"><div class="detail-ellipsis">○議長（清水富雄君）　これより本日の会議を開きます。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　これより本日の会議を開きます。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_4">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="4" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_4"><div class="detail-ellipsis">○議長（清水富雄君）　会議録署名者は、磯部圭太君と北谷まり君にお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　会議録署名者は、磯部圭太君と北谷まり君にお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_5">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="5" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_5"><div class="detail-ellipsis">○議長（清水富雄君）　この際、諸般の報告を申し上げます。
+　市長から横浜市国民保護計画の変更について報告がありましたので、さきに配付いたしておきました。（資料編１ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　この際、諸般の報告を申し上げます。
+　市長から横浜市国民保護計画の変更について報告がありましたので、さきに配付いたしておきました。（資料編１ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_6">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="6" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_6"><div class="detail-ellipsis">○議長（清水富雄君）　次に、市会議員待遇者及び功労者大久保純男氏は、去る４月２日に逝去されました。誠に哀悼の至りに堪えません。
+　ここに謹んで御冥福をお祈りし、弔意を表します。
+　以上で諸般の報告を終わります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、市会議員待遇者及び功労者大久保純男氏は、去る４月２日に逝去されました。誠に哀悼の至りに堪えません。
+　ここに謹んで御冥福をお祈りし、弔意を表します。
+　以上で諸般の報告を終わります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_7">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="7" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_7"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程の追加について申し上げます。
+　お手元に配付いたしました議事日程第８号を本日の日程に追加し、順次御審議いただきますので、御了承願います。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程の追加について申し上げます。
+　お手元に配付いたしました議事日程第８号を本日の日程に追加し、順次御審議いただきますので、御了承願います。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_8">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="8" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_8"><div class="detail-ellipsis">○議長（清水富雄君）　これより日程に入ります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　これより日程に入ります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_9">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="9" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_9"><div class="detail-ellipsis">○議長（清水富雄君）　日程第１、会期の決定を議題といたします。
+　お諮りいたします。
+　本定例会の会期は本日から６月７日までの26日間にいたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　日程第１、会期の決定を議題といたします。
+　お諮りいたします。
+　本定例会の会期は本日から６月７日までの26日間にいたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_10">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="10" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_10"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、会期は６月７日までの26日間と決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、会期は６月７日までの26日間と決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_11">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="11" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.6</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_11"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第２、常任委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第２、常任委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_12">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="12" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.7</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_12"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編144ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編144ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_13">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="13" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.7</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_13"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第３、常任委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第３、常任委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_14">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="14" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.7</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_14"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　政策・総務・財政委員会委員長に大桑正貴君
+　　　　　　同副委員長に大岩真善和君と望月康弘君
+　　国際・経済・港湾委員会委員長に中山大輔君
+　　　　　　同副委員長に高橋のりみ君と斎藤真二君
+　　市民・文化観光・消防委員会委員長に中島光徳君
+　　　　　　同副委員長に山本たかし君と望月高徳君
+　　こども青少年・教育委員会委員長に麓理恵君
+　　　　　　同副委員長に関勝則君と藤代哲夫君
+　　健康福祉・医療委員会委員長に斉藤伸一君
+　　　　　　同副委員長に山下正人君と大山しょうじ君
+　　温暖化対策・環境創造・資源循環委員会委員長に横山勇太朗君
+　　　　　　同副委員長に谷田部孝一君と源波正保君
+　　建築・都市整備・道路委員会委員長に磯部圭太君
+　　　　　　同副委員長に渋谷健君とみわ智恵美君
+　　水道・交通委員会委員長に小松範昭君
+　　　　　　同副委員長に草間剛君と岩崎ひろし君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　政策・総務・財政委員会委員長に大桑正貴君
+　　　　　　同副委員長に大岩真善和君と望月康弘君
+　　国際・経済・港湾委員会委員長に中山大輔君
+　　　　　　同副委員長に高橋のりみ君と斎藤真二君
+　　市民・文化観光・消防委員会委員長に中島光徳君
+　　　　　　同副委員長に山本たかし君と望月高徳君
+　　こども青少年・教育委員会委員長に麓理恵君
+　　　　　　同副委員長に関勝則君と藤代哲夫君
+　　健康福祉・医療委員会委員長に斉藤伸一君
+　　　　　　同副委員長に山下正人君と大山しょうじ君
+　　温暖化対策・環境創造・資源循環委員会委員長に横山勇太朗君
+　　　　　　同副委員長に谷田部孝一君と源波正保君
+　　建築・都市整備・道路委員会委員長に磯部圭太君
+　　　　　　同副委員長に渋谷健君とみわ智恵美君
+　　水道・交通委員会委員長に小松範昭君
+　　　　　　同副委員長に草間剛君と岩崎ひろし君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_15">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="15" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.7</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_15"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_16">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="16" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.8</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_16"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第４、特別委員会報告書を議題といたします。
+　大都市行財政制度特別委員会外６特別委員会から付議事件の調査に基づく報告書が提出されましたので、お手元に配付いたしておきました。（資料編145ページ参照）
+　本件につきましては、各委員会での一致を得て報告されたものでありますので、以上で御了承願います。
+　この際、申し上げます。
+　ただいま決定いたしました特別委員会報告書７件につきましては、私から市長へ送付いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第４、特別委員会報告書を議題といたします。
+　大都市行財政制度特別委員会外６特別委員会から付議事件の調査に基づく報告書が提出されましたので、お手元に配付いたしておきました。（資料編145ページ参照）
+　本件につきましては、各委員会での一致を得て報告されたものでありますので、以上で御了承願います。
+　この際、申し上げます。
+　ただいま決定いたしました特別委員会報告書７件につきましては、私から市長へ送付いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_17">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="17" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.8</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_17"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第５、特別委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第５、特別委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_18">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="18" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.8</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_18"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編395ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編395ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_19">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="19" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.8</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_19"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第６、特別委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第６、特別委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_20">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="20" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.8</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_20"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　大都市行財政制度特別委員会委員長に長谷川琢磨君
+　　　　　　同副委員長に森ひろたか君と福島直子君
+　　基地対策特別委員会委員長に伏見幸枝君
+　　　　　　同副委員長に福地茂君と宇佐美さやか君
+　　減災対策推進特別委員会委員長に行田朝仁君
+　　　　　　同副委員長に青木亮祐君と長谷川えつこ君
+　　新たな都市活力推進特別委員会委員長に荻原隆宏君
+　　　　　　同副委員長に酒井誠君と遊佐大輔君
+　　健康づくり・スポーツ推進特別委員会委員長に伊波俊之助君
+　　　　　　同副委員長に東みちよ君と大野トモイ君
+　　郊外部再生・活性化特別委員会委員長に川口広君
+　　　　　　同副委員長に鴨志田啓介君と竹野内猛君
+　　デジタル化推進特別委員会委員長に山浦英太君
+　　　　　　同副委員長に山田一誠君と尾崎太君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　大都市行財政制度特別委員会委員長に長谷川琢磨君
+　　　　　　同副委員長に森ひろたか君と福島直子君
+　　基地対策特別委員会委員長に伏見幸枝君
+　　　　　　同副委員長に福地茂君と宇佐美さやか君
+　　減災対策推進特別委員会委員長に行田朝仁君
+　　　　　　同副委員長に青木亮祐君と長谷川えつこ君
+　　新たな都市活力推進特別委員会委員長に荻原隆宏君
+　　　　　　同副委員長に酒井誠君と遊佐大輔君
+　　健康づくり・スポーツ推進特別委員会委員長に伊波俊之助君
+　　　　　　同副委員長に東みちよ君と大野トモイ君
+　　郊外部再生・活性化特別委員会委員長に川口広君
+　　　　　　同副委員長に鴨志田啓介君と竹野内猛君
+　　デジタル化推進特別委員会委員長に山浦英太君
+　　　　　　同副委員長に山田一誠君と尾崎太君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_21">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="21" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_21"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_22">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="22" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_22"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第７、市会運営委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第７、市会運営委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_23">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="23" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_23"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編396ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編396ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_24">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="24" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_24"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第８、市会運営委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第８、市会運営委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_25">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="25" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_25"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　委員長に黒川勝君、副委員長に有村俊彦君と安西英俊君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　委員長に黒川勝君、副委員長に有村俊彦君と安西英俊君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_26">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="26" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.9</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_26"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_27">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="27" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_27"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第９、神奈川県内広域水道企業団議会議員４人の選挙を行います。
+　本件は、本市会から選出されております同企業団議会議員４人がこのたび辞職されましたので、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第９、神奈川県内広域水道企業団議会議員４人の選挙を行います。
+　本件は、本市会から選出されております同企業団議会議員４人がこのたび辞職されましたので、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_28">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="28" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_28"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　瀬之間康浩君、関勝則君、藤崎浩太郎君、竹内康洋君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　瀬之間康浩君、関勝則君、藤崎浩太郎君、竹内康洋君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_29">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="29" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_29"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_30">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="30" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_30"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第10、神奈川県後期高齢者医療広域連合議会議員７人の選挙を行います。
+　本件は、本市会から選出されております同広域連合議会議員７人の任期が令和４年６月30日に満了することに伴い、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第10、神奈川県後期高齢者医療広域連合議会議員７人の選挙を行います。
+　本件は、本市会から選出されております同広域連合議会議員７人の任期が令和４年６月30日に満了することに伴い、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_31">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="31" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_31"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　磯部圭太君、伏見幸枝君、梶尾明君、花上喜代志君、尾崎太君、行田朝仁君、白井正子君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　磯部圭太君、伏見幸枝君、梶尾明君、花上喜代志君、尾崎太君、行田朝仁君、白井正子君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_32">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="32" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.10</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_32"><div class="detail-ellipsis">○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_33">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="33" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_33"><div class="detail-ellipsis">○議長（清水富雄君）　次に、日程第11、市第23号議案を議題といたします。
+　なお、本案につきましては、地方自治法第117条の規定により、該当の方の退席を求めます。
+　　　　　〔該当者退席〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　次に、日程第11、市第23号議案を議題といたします。
+　なお、本案につきましては、地方自治法第117条の規定により、該当の方の退席を求めます。
+　　　　　〔該当者退席〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_34">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="34" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_34"><div class="detail-ellipsis">○議長（清水富雄君）　案はお手元に配付いたしておきました。
+　案の朗読は省略いたします。
+　市長から説明のため発言を求められておりますので、これを許します。山中市長。
+　　　　　〔市長　山中竹春君登壇〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　案はお手元に配付いたしておきました。
+　案の朗読は省略いたします。
+　市長から説明のため発言を求められておりますので、これを許します。山中市長。
+　　　　　〔市長　山中竹春君登壇〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_35">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="35" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">◎答弁</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">市長（山中竹春君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_35"><div class="detail-ellipsis">◎市長（山中竹春君）　市第23号議案について御説明いたします。
+　本案は、本市監査委員の選任に関する議案でありまして、市会議員のうちから選任された監査委員横山正人氏及び中山大輔氏から退職の願い出がありましたので、その後任者として松本研氏及び今野典人氏を選任いたしたく、地方自治法第196条第１項の規定により御同意をお願いするものであります。
+　よろしくお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>◎市長（山中竹春君）　市第23号議案について御説明いたします。
+　本案は、本市監査委員の選任に関する議案でありまして、市会議員のうちから選任された監査委員横山正人氏及び中山大輔氏から退職の願い出がありましたので、その後任者として松本研氏及び今野典人氏を選任いたしたく、地方自治法第196条第１項の規定により御同意をお願いするものであります。
+　よろしくお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_36">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="36" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_36"><div class="detail-ellipsis">○議長（清水富雄君）　これより採決いたします。
+　採決の方法は、押しボタンによる記名投票といたします。
+　本案は、委員会付託を省略し、案のとおり同意することについて投票願います。
+　　　　　〔投票開始〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　これより採決いたします。
+　採決の方法は、押しボタンによる記名投票といたします。
+　本案は、委員会付託を省略し、案のとおり同意することについて投票願います。
+　　　　　〔投票開始〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_37">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="37" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_37"><div class="detail-ellipsis">○議長（清水富雄君）　押し間違いはございませんか。
+　　　　　〔「なし」と呼ぶ者あり〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　押し間違いはございませんか。
+　　　　　〔「なし」と呼ぶ者あり〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_38">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="38" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_38"><div class="detail-ellipsis">○議長（清水富雄君）　これにて投票を終了いたします。
+　　　　　〔投票終了〕
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　これにて投票を終了いたします。
+　　　　　〔投票終了〕
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_39">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="39" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_39"><div class="detail-ellipsis">○議長（清水富雄君）　総数82、賛成71、反対11。（資料編398ページ参照）
+　よって、同意することに決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　総数82、賛成71、反対11。（資料編398ページ参照）
+　よって、同意することに決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+	<tr class="minute-list back-white" id="list_40">
+		<td rowspan="2" class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="40" title="選択対象"></td>
+		
+		
+		<td rowspan="2" class="lst-r-layout bd-thema">P.11</td>
+		<td rowspan="2" class="bd-thema">○議長</td>
+		<td rowspan="2" class="detail-speech-list bd-thema detail-ellipsis">議長（清水富雄君）</td>
+		<td colspan="2" class="detail-controller back-thema bd-thema" style="display: none;">
+		
+		<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema">URL表示</button>
+		
+		
+	</td></tr>
+	<tr class="back-white">
+		<td class="detail-speech-list bd-thema" id="text_list_40"><div class="detail-ellipsis">○議長（清水富雄君）　これをもって本日の日程は全部終了いたしましたので、散会いたします。
+　　　　　午前10時16分散会
+　　　　　　市会議長　　　　清水富雄
+　　　　　　市会議員　　　　磯部圭太
+　　　　　　同　　　　　　　北谷まり
+</div><div class="detail-genuine" style="display: none;"><pre>○議長（清水富雄君）　これをもって本日の日程は全部終了いたしましたので、散会いたします。
+　　　　　午前10時16分散会
+　　　　　　市会議長　　　　清水富雄
+　　　　　　市会議員　　　　磯部圭太
+　　　　　　同　　　　　　　北谷まり
+</pre></div></td>
+		<td class="bd-thema"><button type="button" class="arrow-speech-list but-arrow abut-back-silver bd-thema" title="表示">▼</button></td>
+	</tr>
+</tbody></table>
+						</fieldset>
+				</div>
+			</form>
+			<form action="#" id="speechForm" method="get" accept-charset="utf-8" style="display: none;">
+				<div class="lr-lay after-siz">
+					<div class="no-print">
+						<p class="p-guide-message-check">「全選択(全解除)」ボタン・・・発言一覧のすべての選択チェックボックスを選択(または選択解除)します。</p>
+						<p class="p-guide-message-page">「頁▶(◀)」ボタン・・・発言一覧の選択列、付箋列を非表示(表示)にします。</p>
+						<p class="p-guide-message-fil">「選択／付箋チェックボックス」、「発言種別／発言者プルダウン」・・・発言の絞り込み表示ができます。</p>
+						<p class="p-guide-message-post">「付箋アイコン」・・・対象の発言、または会議に登録されている付箋を表示します。</p>
+						<p class="p-guide-message-link">発言者リンクをクリックすることで、選択した発言者の発言を表示します。</p>
+						<p class="p-guide-message-select">「▼(▲)」ボタン・・・次の(前の)発言を表示します。</p>
+					</div>
+					<div class="minute-l-lay" id="minute-l-lay">
+						<div class="lst-ope">
+							
+							<button type="button" class="btn-all-select but-small sbut-back-silver bd-thema sall-spacer">全選択</button>
+							<button type="button" class="btn-all-clear but-small sbut-back-silver bd-thema sall-spacer">全解除</button>
+						</div>
+						<div class="lstframe">
+							<fieldset class="no-border">
+							<legend class="no-display">発言一覧</legend>
+							<table id="speech-minute" class="lst lst-fixed"><caption>発言一覧</caption>
+<thead>
+	<tr class="back-thema">
+		<th class="th-check acc-cols lst-c-layout bd-thema">
+			<label>選択<br>
+				<input type="checkbox" class="chk_select chk bd-thema narrow-chk">
+			</label>
+		</th>
+						<th class="th-page lst-c-layout bd-thema">頁<br>
+			<button type="button" class="but-arrow abut-back-silver bd-thema arrow-cols" title="表示">▶</button>
+		</th>
+		<th class="th-type bd-thema">
+			<label>発言種別<br>
+				<select class="slt_minute_type slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="名簿">名簿</option><option value="○議長">○議長</option><option value="◎答弁">◎答弁</option></select>
+			</label>
+		</th>
+		<th class="th-speaker bd-thema">
+			<label>発言者<br>
+				<select class="slt_speaker slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="（名簿）">（名簿）</option><option value="議長（清水富雄君）">議長（清水富雄君）</option><option value="市長（山中竹春君）">市長（山中竹春君）</option></select>
+			</label>
+		</th>
+	</tr>
+</thead>
+<tbody>
+	<tr class="minute-list back-white-shadow back-green" id="speech_0">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="0" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.1</td><td class="bd-thema">名簿</td><td class="bd-thema"><a class="link-change-speaker" href="#">（名簿）</a></td>
+</tr>
+	<tr class="minute-list back-white back-yellow" id="speech_1">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="1" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.5</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_2">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="2" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_3">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="3" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_4">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="4" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_5">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="5" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_6">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="6" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_7">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="7" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_8">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="8" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_9">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="9" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_10">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="10" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_11">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="11" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_12">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="12" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_13">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="13" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_14">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="14" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_15">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="15" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_16">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="16" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_17">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="17" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_18">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="18" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_19">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="19" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_20">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="20" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_21">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="21" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_22">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="22" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_23">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="23" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_24">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="24" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_25">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="25" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_26">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="26" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_27">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="27" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_28">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="28" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_29">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="29" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_30">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="30" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_31">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="31" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_32">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="32" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_33">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="33" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_34">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="34" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_35">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="35" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">◎答弁</td><td class="bd-thema"><a class="link-change-speaker" href="#">市長（山中竹春君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_36">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="36" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_37">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="37" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_38">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="38" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_39">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="39" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_40">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="40" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+</tbody></table>
+							</fieldset>
+						</div>
+					</div>
+					<div class="minute-r-lay" id="minute-r-lay">
+						<div class="remark-siz"></div>
+						<button type="button" id="up_down" class="stab stab-back-thema bd-thema on-tab">縦に表示</button>
+						<button type="button" id="left_right" class="stab stab-back-silver bd-thema">横に表示</button>
+						<div class="remarkframe bd-thema back-thema">
+							<div class="style_up_down">
+								<div id="speech_window_first"><div class="remark-tit bd-thema t-spacer back-green">P.1  名簿  （名簿）  </div>
+<div class="remark-bar1 bd-thema" data-index="0">
+	<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_first_next">▼</button>
+	<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_first_pre" disabled="disabled">▲</button>
+</div>
+<div class="remark-bar2 back-thema bd-thema" data-index="0" id="first_0">
+
+<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema sl-spacer">URL表示</button>
+
+</div>
+<div class="remark-txt bd-thema back-white-shadow">
+<div class="output-data all-spacer" id="text_first_0"><div class="detail-genuine"><pre>令和　４年第２回定例会
+
+　　　　　　　　　　　　　　第２回
+　　　　　　　　　　横浜市会　　　会議録（第６号）
+　　　　　　　　　　　　　　定例会
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　　　　　　　　　　議事日程第７号
+　　　　　　　　令和４年５月13日（金）午前10時開議
+　第１　会期の決定
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　第２　常任委員の選任
+　第３　常任委員会委員長及び同副委員長２人の選挙
+　第４　特別委員会報告書
+　第５　特別委員の選任
+　第６　特別委員会委員長及び同副委員長２人の選挙
+　第７　市会運営委員の選任
+　第７　市会運営委員会委員長及び同副委員長２人の選挙
+　　　　　　　　　　　　　　議事日程第８号
+　第９　神奈川県内広域水道企業団議会議員４人の選挙
+　第10　神奈川県後期高齢者医療広域連合議会議員７人の選挙
+　第11　市第23号議案　横浜市監査委員の選任
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議員（85人）
+　　　　　　　　　　　　　　　　　　　　　鴨志田啓介君
+　　　　　　　　　　　　　　　　　　　　　山田一誠君
+　　　　　　　　　　　　　　　　　　　　　青木亮祐君
+　　　　　　　　　　　　　　　　　　　　　福地　茂君
+　　　　　　　　　　　　　　　　　　　　　長谷川えつこ君
+　　　　　　　　　　　　　　　　　　　　　森　ひろたか君
+　　　　　　　　　　　　　　　　　　　　　大野トモイ君
+　　　　　　　　　　　　　　　　　　　　　佐久間　衛君
+　　　　　　　　　　　　　　　　　　　　　木内秀一君
+　　　　　　　　　　　　　　　　　　　　　久保和弘君
+　　　　　　　　　　　　　　　　　　　　　平田いくよ君
+　　　　　　　　　　　　　　　　　　　　　東　みちよ君
+　　　　　　　　　　　　　　　　　　　　　川口　広君
+　　　　　　　　　　　　　　　　　　　　　長谷川琢磨君
+　　　　　　　　　　　　　　　　　　　　　伊波俊之助君
+　　　　　　　　　　　　　　　　　　　　　伏見幸枝君
+　　　　　　　　　　　　　　　　　　　　　山浦英太君
+　　　　　　　　　　　　　　　　　　　　　梶尾　明君
+　　　　　　　　　　　　　　　　　　　　　ふじい芳明君
+　　　　　　　　　　　　　　　　　　　　　田中ゆき君
+　　　　　　　　　　　　　　　　　　　　　竹野内　猛君
+　　　　　　　　　　　　　　　　　　　　　みわ智恵美君
+　　　　　　　　　　　　　　　　　　　　　北谷まり君
+　　　　　　　　　　　　　　　　　　　　　宇佐美さやか君
+　　　　　　　　　　　　　　　　　　　　　小松範昭君
+　　　　　　　　　　　　　　　　　　　　　山本たかし君
+　　　　　　　　　　　　　　　　　　　　　草間　剛君
+　　　　　　　　　　　　　　　　　　　　　磯部圭太君
+　　　　　　　　　　　　　　　　　　　　　遊佐大輔君
+　　　　　　　　　　　　　　　　　　　　　藤代哲夫君
+　　　　　　　　　　　　　　　　　　　　　有村俊彦君
+　　　　　　　　　　　　　　　　　　　　　大岩真善和君
+　　　　　　　　　　　　　　　　　　　　　藤崎浩太郎君
+　　　　　　　　　　　　　　　　　　　　　行田朝仁君
+　　　　　　　　　　　　　　　　　　　　　中島光徳君
+　　　　　　　　　　　　　　　　　　　　　安西英俊君
+　　　　　　　　　　　　　　　　　　　　　白井正子君
+　　　　　　　　　　　　　　　　　　　　　古谷靖彦君
+　　　　　　　　　　　　　　　　　　　　　二井くみよ君
+　　　　　　　　　　　　　　　　　　　　　横山勇太朗君
+　　　　　　　　　　　　　　　　　　　　　高橋のりみ君
+　　　　　　　　　　　　　　　　　　　　　輿石且子君
+　　　　　　　　　　　　　　　　　　　　　黒川　勝君
+　　　　　　　　　　　　　　　　　　　　　渡邊忠則君
+　　　　　　　　　　　　　　　　　　　　　山下正人君
+　　　　　　　　　　　　　　　　　　　　　関　勝則君
+　　　　　　　　　　　　　　　　　　　　　麓　理恵君
+　　　　　　　　　　　　　　　　　　　　　望月高徳君
+　　　　　　　　　　　　　　　　　　　　　荻原隆宏君
+　　　　　　　　　　　　　　　　　　　　　望月康弘君
+　　　　　　　　　　　　　　　　　　　　　竹内康洋君
+　　　　　　　　　　　　　　　　　　　　　尾崎　太君
+　　　　　　　　　　　　　　　　　　　　　岩崎ひろし君
+　　　　　　　　　　　　　　　　　　　　　河治民夫君
+　　　　　　　　　　　　　　　　　　　　　坂本勝司君
+　　　　　　　　　　　　　　　　　　　　　豊田有希君
+　　　　　　　　　　　　　　　　　　　　　酒井　誠君
+　　　　　　　　　　　　　　　　　　　　　渋谷　健君
+　　　　　　　　　　　　　　　　　　　　　大桑正貴君
+　　　　　　　　　　　　　　　　　　　　　斉藤達也君
+　　　　　　　　　　　　　　　　　　　　　鈴木太郎君
+　　　　　　　　　　　　　　　　　　　　　瀬之間康浩君
+　　　　　　　　　　　　　　　　　　　　　梶村　充君
+　　　　　　　　　　　　　　　　　　　　　今野典人君
+　　　　　　　　　　　　　　　　　　　　　大山しょうじ君
+　　　　　　　　　　　　　　　　　　　　　中山大輔君
+　　　　　　　　　　　　　　　　　　　　　福島直子君
+　　　　　　　　　　　　　　　　　　　　　高橋正治君
+　　　　　　　　　　　　　　　　　　　　　斉藤伸一君
+　　　　　　　　　　　　　　　　　　　　　斎藤真二君
+　　　　　　　　　　　　　　　　　　　　　大貫憲夫君
+　　　　　　　　　　　　　　　　　　　　　荒木由美子君
+　　　　　　　　　　　　　　　　　　　　　こがゆ康弘君
+　　　　　　　　　　　　　　　　　　　　　井上さくら君
+　　　　　　　　　　　　　　　　　　　　　松本　研君
+　　　　　　　　　　　　　　　　　　　　　横山正人君
+　　　　　　　　　　　　　　　　　　　　　佐藤祐文君
+　　　　　　　　　　　　　　　　　　　　　清水富雄君
+　　　　　　　　　　　　　　　　　　　　　佐藤　茂君
+　　　　　　　　　　　　　　　　　　　　　田野井一雄君
+　　　　　　　　　　　　　　　　　　　　　花上喜代志君
+　　　　　　　　　　　　　　　　　　　　　谷田部孝一君
+　　　　　　　　　　　　　　　　　　　　　仁田昌寿君
+　　　　　　　　　　　　　　　　　　　　　加藤広人君
+　　　　　　　　　　　　　　　　　　　　　源波正保君
+　欠員（１人）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席説明員
+　　　　　　　　市長　　　　　　　　　　　山中竹春君
+　　　　　　　　副市長　　　　　　　　　　平原敏英君
+　　　　　　　　副市長　　　　　　　　　　城　博俊君
+　　　　　　　　副市長　　　　　　　　　　伊地知英弘君
+　　　　　　　　副市長　　　　　　　　　　大久保智子君
+　　　　　　　　技監　　　　　　　　　　　小池政則君
+　　　　　　　　危機管理監　　　　　　　　高坂哲也君
+　　　　　　　　温暖化対策統括本部長　　　石川武史君
+　　　　　　　　デジタル統括本部長　　　　下田康晴君
+　　　　　　　　政策局長　　　　　　　　　鈴木和宏君
+　　　　　　　　総務局長　　　　　　　　　松浦　淳君
+　　　　　　　　財政局長　　　　　　　　　近野真一君
+　　　　　　　　国際局長　　　　　　　　　橋本　徹君
+　　　　　　　　市民局長　　　　　　　　　石内　亮君
+　　　　　　　　文化観光局副局長
+　　　　　　　　　　　　　　　　　　　　　小林　仁君
+　　　　　　　　（総務部長）
+　　　　　　　　経済局長　　　　　　　　　星崎雅代君
+　　　　　　　　こども青少年局長　　　　　吉川直友君
+　　　　　　　　健康福祉局長　　　　　　　佐藤広毅君
+　　　　　　　　医療局長　　　　　　　　　修理　淳君
+　　　　　　　　病院経営本部長　　　　　　平原史樹君
+　　　　　　　　環境創造局長　　　　　　　遠藤賢也君
+　　　　　　　　資源循環局長　　　　　　　金澤貞幸君
+　　　　　　　　建築局長　　　　　　　　　鵜澤聡明君
+　　　　　　　　都市整備局長　　　　　　　堀田和宏君
+　　　　　　　　道路局長　　　　　　　　　高瀬卓弥君
+　　　　　　　　港湾局長　　　　　　　　　中野裕也君
+　　　　　　　　消防局長　　　　　　　　　平中　隆君
+　　　　　　　　水道局長　　　　　　　　　山岡秀一君
+　　　　　　　　交通局長　　　　　　　　　三村庄一君
+　　　　　　　　会計管理者
+　　　　　　　　　　　　　　　　　　　　　青木幸雄君
+　　　　　　　　（会計室長）
+　　　　　　　　教育長　　　　　　　　　　鯉渕信也君
+　　　　　　　　選挙管理委員会委員長　　　菅野義矩君
+　　　　　　　　選挙管理委員会
+　　　　　　　　　　　　　　　　　　　　　小磯行生君
+　　　　　　　　事務局長
+　　　　　　　　人事委員会委員長
+　　　　　　　　　　　　　　　　　　　　　大貫一幸君
+　　　　　　　　職務代理者
+　　　　　　　　人事委員会事務局長　　　　伊藤友道君
+　　　　　　　　代表監査委員　　　　　　　藤野次雄君
+　　　　　　　　監査事務局長　　　　　　　栗谷静哉君
+　　　　　　　　政策局秘書部長　　　　　　橋本　岳君
+　　　　　　　　総務局副局長
+　　　　　　　　　　　　　　　　　　　　　佐藤康博君
+　　　　　　　　（総務部長）
+　　　　　　　　教育次長　　　　　　　　　木村　奨君
+　　　　　　　　総務局総務課長　　　　　　藤岡謙二君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議会局職員
+　　　　　　　　局長　　　　　　　　　　　屋代英明君
+　　　　　　　　副局長
+　　　　　　　　　　　　　　　　　　　　　豊　基信君
+　　　　　　　　（市会事務部長）
+　　　　　　　　政策調査等担当部長　　　　濃野　誠君
+　　　　　　　　総務課長　　　　　　　　　増田政博君
+　　　　　　　　議事課長　　　　　　　　　本多　修君
+　　　　　　　　調整等担当課長　　　　　　小島康文君
+　　　　　　　　政策調査課長　　　　　　　山根伸哉君
+　　　　　　　　法制等担当課長　　　　　　石津清美君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　午前10時00分開会
+</pre></div></div>
+</div>
+</div>
+								<div id="speech_window_second"><div class="remark-tit bd-thema t-spacer back-yellow">P.5  ○議長  議長（清水富雄君）  </div>
+<div class="remark-bar1 bd-thema" data-index="1">
+	<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_second_next">▼</button>
+	<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_second_pre">▲</button>
+</div>
+<div class="remark-bar2 back-thema bd-thema" data-index="1" id="second_1">
+
+<button type="button" class="btn-view-url but-small sbut-back-silver bd-thema sl-spacer">URL表示</button>
+
+</div>
+<div class="remark-txt bd-thema back-white-shadow">
+<div class="output-data all-spacer" id="text_second_1"><div class="detail-genuine"><pre>○議長（清水富雄君）　現在着席議員数は85人であります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div></div>
+</div>
+</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+			<form action="#" id="twinForm" method="get" accept-charset="utf-8" style="display: none;">
+				<div class="lr-lay after-siz">
+					<div class="no-print">
+						<p class="p-guide-message-check">「全選択(全解除)」ボタン・・・発言一覧のすべての選択チェックボックスを選択(または選択解除)します。</p>
+						<p class="p-guide-message-page">「頁▶(◀)」ボタン・・・発言一覧の選択列、付箋列を非表示(表示)にします。</p>
+						<p class="p-guide-message-fil">「選択／付箋チェックボックス」、「発言種別／発言者プルダウン」・・・発言の絞り込み表示ができます。</p>
+						<p class="p-guide-message-post">「付箋アイコン」・・・対象の発言、または会議に登録されている付箋を表示します。</p>
+						<p class="p-guide-message-link">発言者リンクをクリックすることで、選択した発言者の発言を表示します。</p>
+						<p class="p-guide-message-select">「▼(▲)」ボタン・・・次の(前の)発言を表示します。</p>
+					</div>
+					<div class="minute-l-lay no-print" id="minute-l-lay-twin">
+						<div class="lst-ope">
+							
+							<button type="button" class="btn-all-select but-small sbut-back-silver bd-thema sall-spacer">全選択</button>
+							<button type="button" class="btn-all-clear but-small sbut-back-silver bd-thema sall-spacer">全解除</button>
+						</div>
+						<div class="lstframe">
+							<fieldset class="no-border">
+							<legend class="no-display">発言一覧</legend>
+							<table id="tbl-twin-minute" class="lst lst-fixed"><caption>発言一覧</caption>
+<thead>
+	<tr class="back-thema">
+		<th class="th-check acc-cols lst-c-layout bd-thema">
+			<label>選択<br>
+				<input type="checkbox" class="chk_select chk bd-thema narrow-chk">
+			</label>
+		</th>
+						<th class="th-page lst-c-layout bd-thema">頁<br>
+			<button type="button" class="but-arrow abut-back-silver bd-thema arrow-cols" title="表示">▶</button>
+		</th>
+		<th class="th-type bd-thema">
+			<label>発言種別<br>
+				<select class="slt_minute_type slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="名簿">名簿</option><option value="○議長">○議長</option><option value="◎答弁">◎答弁</option></select>
+			</label>
+		</th>
+		<th class="th-speaker bd-thema">
+			<label>発言者<br>
+				<select class="slt_speaker slt bd-thema narrow-slt">
+					
+				<option value="">全て</option><option value="（名簿）">（名簿）</option><option value="議長（清水富雄君）">議長（清水富雄君）</option><option value="市長（山中竹春君）">市長（山中竹春君）</option></select>
+			</label>
+		</th>
+	</tr>
+</thead>
+<tbody>
+	<tr class="minute-list back-white-shadow back-green" id="speech_0_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="0" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.1</td><td class="bd-thema">名簿</td><td class="bd-thema"><a class="link-change-speaker" href="#">（名簿）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_1_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="1" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.5</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_2_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="2" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_3_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="3" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_4_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="4" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_5_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="5" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_6_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="6" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_7_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="7" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_8_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="8" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_9_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="9" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_10_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="10" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_11_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="11" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.6</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_12_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="12" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_13_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="13" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_14_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="14" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_15_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="15" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.7</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_16_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="16" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_17_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="17" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_18_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="18" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_19_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="19" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_20_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="20" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.8</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_21_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="21" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_22_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="22" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_23_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="23" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_24_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="24" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_25_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="25" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_26_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="26" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.9</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_27_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="27" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_28_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="28" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_29_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="29" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_30_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="30" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_31_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="31" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_32_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="32" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.10</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_33_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="33" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_34_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="34" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_35_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="35" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">◎答弁</td><td class="bd-thema"><a class="link-change-speaker" href="#">市長（山中竹春君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_36_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="36" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_37_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="37" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_38_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="38" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_39_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="39" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+	<tr class="minute-list back-white" id="speech_40_twin">
+		<td class="lst-c-layout acc-cols bd-thema"><input type="checkbox" name="chk-items" class="chk bd-thema" value="40" title="選択対象"></td>
+		
+		
+		<td class="lst-r-layout bd-thema">P.11</td><td class="bd-thema">○議長</td><td class="bd-thema"><a class="link-change-speaker" href="#">議長（清水富雄君）</a></td>
+</tr>
+</tbody></table>
+							</fieldset>
+						</div>
+					</div>
+					<div class="minute-r-lay" id="minute-r-lay-twin">
+						<div class="remark-siz"></div>
+						<div id="twin-minute" class="back-white-shadow bd-thema"><nav>
+	<div class="remark-tit bd-thema back-green" id="twin-title">P.1 名簿 （名簿）</div>
+	<div class="remark-bar1 bd-thema" data-index="0" id="twin-arrow">
+		<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_twin_next">▼</button>
+		<button type="button" class="but-move but-small sbut-back-silver bd-thema sall-spacer" id="sub_twin_pre" disabled="">▲</button>
+	</div>
+	<div class="info-bar back-thema bd-thema minute-list" id="twin_0">
+		<button id="btn-url-twin" type="button" class="btn-view-url but-small sbut-back-silver bd-thema sall-spacer">URL表示</button>
+		<button id="btn-print-twin" type="button" class="but-small sbut-back-silver bd-thema sall-spacer">印刷</button>
+		
+		
+		<button type="button" class="btn-view-related-minute but-small sbut-back-silver bd-thema sall-spacer" style="display: none;">関連議事録</button>
+	</div>
+</nav>
+<div>
+	<div class="info-txt back-white-shadow bd-thema remark-txt2">
+		<div class="output-data all-spacer">
+			<a id="scroll_0"></a><div><pre>令和　４年第２回定例会
+
+　　　　　　　　　　　　　　第２回
+　　　　　　　　　　横浜市会　　　会議録（第６号）
+　　　　　　　　　　　　　　定例会
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　　　　　　　　　　議事日程第７号
+　　　　　　　　令和４年５月13日（金）午前10時開議
+　第１　会期の決定
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　第２　常任委員の選任
+　第３　常任委員会委員長及び同副委員長２人の選挙
+　第４　特別委員会報告書
+　第５　特別委員の選任
+　第６　特別委員会委員長及び同副委員長２人の選挙
+　第７　市会運営委員の選任
+　第７　市会運営委員会委員長及び同副委員長２人の選挙
+　　　　　　　　　　　　　　議事日程第８号
+　第９　神奈川県内広域水道企業団議会議員４人の選挙
+　第10　神奈川県後期高齢者医療広域連合議会議員７人の選挙
+　第11　市第23号議案　横浜市監査委員の選任
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議員（85人）
+　　　　　　　　　　　　　　　　　　　　　鴨志田啓介君
+　　　　　　　　　　　　　　　　　　　　　山田一誠君
+　　　　　　　　　　　　　　　　　　　　　青木亮祐君
+　　　　　　　　　　　　　　　　　　　　　福地　茂君
+　　　　　　　　　　　　　　　　　　　　　長谷川えつこ君
+　　　　　　　　　　　　　　　　　　　　　森　ひろたか君
+　　　　　　　　　　　　　　　　　　　　　大野トモイ君
+　　　　　　　　　　　　　　　　　　　　　佐久間　衛君
+　　　　　　　　　　　　　　　　　　　　　木内秀一君
+　　　　　　　　　　　　　　　　　　　　　久保和弘君
+　　　　　　　　　　　　　　　　　　　　　平田いくよ君
+　　　　　　　　　　　　　　　　　　　　　東　みちよ君
+　　　　　　　　　　　　　　　　　　　　　川口　広君
+　　　　　　　　　　　　　　　　　　　　　長谷川琢磨君
+　　　　　　　　　　　　　　　　　　　　　伊波俊之助君
+　　　　　　　　　　　　　　　　　　　　　伏見幸枝君
+　　　　　　　　　　　　　　　　　　　　　山浦英太君
+　　　　　　　　　　　　　　　　　　　　　梶尾　明君
+　　　　　　　　　　　　　　　　　　　　　ふじい芳明君
+　　　　　　　　　　　　　　　　　　　　　田中ゆき君
+　　　　　　　　　　　　　　　　　　　　　竹野内　猛君
+　　　　　　　　　　　　　　　　　　　　　みわ智恵美君
+　　　　　　　　　　　　　　　　　　　　　北谷まり君
+　　　　　　　　　　　　　　　　　　　　　宇佐美さやか君
+　　　　　　　　　　　　　　　　　　　　　小松範昭君
+　　　　　　　　　　　　　　　　　　　　　山本たかし君
+　　　　　　　　　　　　　　　　　　　　　草間　剛君
+　　　　　　　　　　　　　　　　　　　　　磯部圭太君
+　　　　　　　　　　　　　　　　　　　　　遊佐大輔君
+　　　　　　　　　　　　　　　　　　　　　藤代哲夫君
+　　　　　　　　　　　　　　　　　　　　　有村俊彦君
+　　　　　　　　　　　　　　　　　　　　　大岩真善和君
+　　　　　　　　　　　　　　　　　　　　　藤崎浩太郎君
+　　　　　　　　　　　　　　　　　　　　　行田朝仁君
+　　　　　　　　　　　　　　　　　　　　　中島光徳君
+　　　　　　　　　　　　　　　　　　　　　安西英俊君
+　　　　　　　　　　　　　　　　　　　　　白井正子君
+　　　　　　　　　　　　　　　　　　　　　古谷靖彦君
+　　　　　　　　　　　　　　　　　　　　　二井くみよ君
+　　　　　　　　　　　　　　　　　　　　　横山勇太朗君
+　　　　　　　　　　　　　　　　　　　　　高橋のりみ君
+　　　　　　　　　　　　　　　　　　　　　輿石且子君
+　　　　　　　　　　　　　　　　　　　　　黒川　勝君
+　　　　　　　　　　　　　　　　　　　　　渡邊忠則君
+　　　　　　　　　　　　　　　　　　　　　山下正人君
+　　　　　　　　　　　　　　　　　　　　　関　勝則君
+　　　　　　　　　　　　　　　　　　　　　麓　理恵君
+　　　　　　　　　　　　　　　　　　　　　望月高徳君
+　　　　　　　　　　　　　　　　　　　　　荻原隆宏君
+　　　　　　　　　　　　　　　　　　　　　望月康弘君
+　　　　　　　　　　　　　　　　　　　　　竹内康洋君
+　　　　　　　　　　　　　　　　　　　　　尾崎　太君
+　　　　　　　　　　　　　　　　　　　　　岩崎ひろし君
+　　　　　　　　　　　　　　　　　　　　　河治民夫君
+　　　　　　　　　　　　　　　　　　　　　坂本勝司君
+　　　　　　　　　　　　　　　　　　　　　豊田有希君
+　　　　　　　　　　　　　　　　　　　　　酒井　誠君
+　　　　　　　　　　　　　　　　　　　　　渋谷　健君
+　　　　　　　　　　　　　　　　　　　　　大桑正貴君
+　　　　　　　　　　　　　　　　　　　　　斉藤達也君
+　　　　　　　　　　　　　　　　　　　　　鈴木太郎君
+　　　　　　　　　　　　　　　　　　　　　瀬之間康浩君
+　　　　　　　　　　　　　　　　　　　　　梶村　充君
+　　　　　　　　　　　　　　　　　　　　　今野典人君
+　　　　　　　　　　　　　　　　　　　　　大山しょうじ君
+　　　　　　　　　　　　　　　　　　　　　中山大輔君
+　　　　　　　　　　　　　　　　　　　　　福島直子君
+　　　　　　　　　　　　　　　　　　　　　高橋正治君
+　　　　　　　　　　　　　　　　　　　　　斉藤伸一君
+　　　　　　　　　　　　　　　　　　　　　斎藤真二君
+　　　　　　　　　　　　　　　　　　　　　大貫憲夫君
+　　　　　　　　　　　　　　　　　　　　　荒木由美子君
+　　　　　　　　　　　　　　　　　　　　　こがゆ康弘君
+　　　　　　　　　　　　　　　　　　　　　井上さくら君
+　　　　　　　　　　　　　　　　　　　　　松本　研君
+　　　　　　　　　　　　　　　　　　　　　横山正人君
+　　　　　　　　　　　　　　　　　　　　　佐藤祐文君
+　　　　　　　　　　　　　　　　　　　　　清水富雄君
+　　　　　　　　　　　　　　　　　　　　　佐藤　茂君
+　　　　　　　　　　　　　　　　　　　　　田野井一雄君
+　　　　　　　　　　　　　　　　　　　　　花上喜代志君
+　　　　　　　　　　　　　　　　　　　　　谷田部孝一君
+　　　　　　　　　　　　　　　　　　　　　仁田昌寿君
+　　　　　　　　　　　　　　　　　　　　　加藤広人君
+　　　　　　　　　　　　　　　　　　　　　源波正保君
+　欠員（１人）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席説明員
+　　　　　　　　市長　　　　　　　　　　　山中竹春君
+　　　　　　　　副市長　　　　　　　　　　平原敏英君
+　　　　　　　　副市長　　　　　　　　　　城　博俊君
+　　　　　　　　副市長　　　　　　　　　　伊地知英弘君
+　　　　　　　　副市長　　　　　　　　　　大久保智子君
+　　　　　　　　技監　　　　　　　　　　　小池政則君
+　　　　　　　　危機管理監　　　　　　　　高坂哲也君
+　　　　　　　　温暖化対策統括本部長　　　石川武史君
+　　　　　　　　デジタル統括本部長　　　　下田康晴君
+　　　　　　　　政策局長　　　　　　　　　鈴木和宏君
+　　　　　　　　総務局長　　　　　　　　　松浦　淳君
+　　　　　　　　財政局長　　　　　　　　　近野真一君
+　　　　　　　　国際局長　　　　　　　　　橋本　徹君
+　　　　　　　　市民局長　　　　　　　　　石内　亮君
+　　　　　　　　文化観光局副局長
+　　　　　　　　　　　　　　　　　　　　　小林　仁君
+　　　　　　　　（総務部長）
+　　　　　　　　経済局長　　　　　　　　　星崎雅代君
+　　　　　　　　こども青少年局長　　　　　吉川直友君
+　　　　　　　　健康福祉局長　　　　　　　佐藤広毅君
+　　　　　　　　医療局長　　　　　　　　　修理　淳君
+　　　　　　　　病院経営本部長　　　　　　平原史樹君
+　　　　　　　　環境創造局長　　　　　　　遠藤賢也君
+　　　　　　　　資源循環局長　　　　　　　金澤貞幸君
+　　　　　　　　建築局長　　　　　　　　　鵜澤聡明君
+　　　　　　　　都市整備局長　　　　　　　堀田和宏君
+　　　　　　　　道路局長　　　　　　　　　高瀬卓弥君
+　　　　　　　　港湾局長　　　　　　　　　中野裕也君
+　　　　　　　　消防局長　　　　　　　　　平中　隆君
+　　　　　　　　水道局長　　　　　　　　　山岡秀一君
+　　　　　　　　交通局長　　　　　　　　　三村庄一君
+　　　　　　　　会計管理者
+　　　　　　　　　　　　　　　　　　　　　青木幸雄君
+　　　　　　　　（会計室長）
+　　　　　　　　教育長　　　　　　　　　　鯉渕信也君
+　　　　　　　　選挙管理委員会委員長　　　菅野義矩君
+　　　　　　　　選挙管理委員会
+　　　　　　　　　　　　　　　　　　　　　小磯行生君
+　　　　　　　　事務局長
+　　　　　　　　人事委員会委員長
+　　　　　　　　　　　　　　　　　　　　　大貫一幸君
+　　　　　　　　職務代理者
+　　　　　　　　人事委員会事務局長　　　　伊藤友道君
+　　　　　　　　代表監査委員　　　　　　　藤野次雄君
+　　　　　　　　監査事務局長　　　　　　　栗谷静哉君
+　　　　　　　　政策局秘書部長　　　　　　橋本　岳君
+　　　　　　　　総務局副局長
+　　　　　　　　　　　　　　　　　　　　　佐藤康博君
+　　　　　　　　（総務部長）
+　　　　　　　　教育次長　　　　　　　　　木村　奨君
+　　　　　　　　総務局総務課長　　　　　　藤岡謙二君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　出席議会局職員
+　　　　　　　　局長　　　　　　　　　　　屋代英明君
+　　　　　　　　副局長
+　　　　　　　　　　　　　　　　　　　　　豊　基信君
+　　　　　　　　（市会事務部長）
+　　　　　　　　政策調査等担当部長　　　　濃野　誠君
+　　　　　　　　総務課長　　　　　　　　　増田政博君
+　　　　　　　　議事課長　　　　　　　　　本多　修君
+　　　　　　　　調整等担当課長　　　　　　小島康文君
+　　　　　　　　政策調査課長　　　　　　　山根伸哉君
+　　　　　　　　法制等担当課長　　　　　　石津清美君
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+　　　　　午前10時00分開会
+</pre></div>
+			<a id="scroll_1"></a><div><pre>○議長（清水富雄君）　現在着席議員数は85人であります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_2"></a><div><pre>○議長（清水富雄君）　ただいまより令和４年第２回市会定例会を開会いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_3"></a><div><pre>○議長（清水富雄君）　これより本日の会議を開きます。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_4"></a><div><pre>○議長（清水富雄君）　会議録署名者は、磯部圭太君と北谷まり君にお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_5"></a><div><pre>○議長（清水富雄君）　この際、諸般の報告を申し上げます。
+　市長から横浜市国民保護計画の変更について報告がありましたので、さきに配付いたしておきました。（資料編１ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_6"></a><div><pre>○議長（清水富雄君）　次に、市会議員待遇者及び功労者大久保純男氏は、去る４月２日に逝去されました。誠に哀悼の至りに堪えません。
+　ここに謹んで御冥福をお祈りし、弔意を表します。
+　以上で諸般の報告を終わります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_7"></a><div><pre>○議長（清水富雄君）　次に、日程の追加について申し上げます。
+　お手元に配付いたしました議事日程第８号を本日の日程に追加し、順次御審議いただきますので、御了承願います。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_8"></a><div><pre>○議長（清水富雄君）　これより日程に入ります。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_9"></a><div><pre>○議長（清水富雄君）　日程第１、会期の決定を議題といたします。
+　お諮りいたします。
+　本定例会の会期は本日から６月７日までの26日間にいたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_10"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、会期は６月７日までの26日間と決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_11"></a><div><pre>○議長（清水富雄君）　次に、日程第２、常任委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_12"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編144ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_13"></a><div><pre>○議長（清水富雄君）　次に、日程第３、常任委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_14"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　政策・総務・財政委員会委員長に大桑正貴君
+　　　　　　同副委員長に大岩真善和君と望月康弘君
+　　国際・経済・港湾委員会委員長に中山大輔君
+　　　　　　同副委員長に高橋のりみ君と斎藤真二君
+　　市民・文化観光・消防委員会委員長に中島光徳君
+　　　　　　同副委員長に山本たかし君と望月高徳君
+　　こども青少年・教育委員会委員長に麓理恵君
+　　　　　　同副委員長に関勝則君と藤代哲夫君
+　　健康福祉・医療委員会委員長に斉藤伸一君
+　　　　　　同副委員長に山下正人君と大山しょうじ君
+　　温暖化対策・環境創造・資源循環委員会委員長に横山勇太朗君
+　　　　　　同副委員長に谷田部孝一君と源波正保君
+　　建築・都市整備・道路委員会委員長に磯部圭太君
+　　　　　　同副委員長に渋谷健君とみわ智恵美君
+　　水道・交通委員会委員長に小松範昭君
+　　　　　　同副委員長に草間剛君と岩崎ひろし君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_15"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_16"></a><div><pre>○議長（清水富雄君）　次に、日程第４、特別委員会報告書を議題といたします。
+　大都市行財政制度特別委員会外６特別委員会から付議事件の調査に基づく報告書が提出されましたので、お手元に配付いたしておきました。（資料編145ページ参照）
+　本件につきましては、各委員会での一致を得て報告されたものでありますので、以上で御了承願います。
+　この際、申し上げます。
+　ただいま決定いたしました特別委員会報告書７件につきましては、私から市長へ送付いたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_17"></a><div><pre>○議長（清水富雄君）　次に、日程第５、特別委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_18"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編395ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_19"></a><div><pre>○議長（清水富雄君）　次に、日程第６、特別委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_20"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　　大都市行財政制度特別委員会委員長に長谷川琢磨君
+　　　　　　同副委員長に森ひろたか君と福島直子君
+　　基地対策特別委員会委員長に伏見幸枝君
+　　　　　　同副委員長に福地茂君と宇佐美さやか君
+　　減災対策推進特別委員会委員長に行田朝仁君
+　　　　　　同副委員長に青木亮祐君と長谷川えつこ君
+　　新たな都市活力推進特別委員会委員長に荻原隆宏君
+　　　　　　同副委員長に酒井誠君と遊佐大輔君
+　　健康づくり・スポーツ推進特別委員会委員長に伊波俊之助君
+　　　　　　同副委員長に東みちよ君と大野トモイ君
+　　郊外部再生・活性化特別委員会委員長に川口広君
+　　　　　　同副委員長に鴨志田啓介君と竹野内猛君
+　　デジタル化推進特別委員会委員長に山浦英太君
+　　　　　　同副委員長に山田一誠君と尾崎太君
+　を、それぞれ指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_21"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_22"></a><div><pre>○議長（清水富雄君）　次に、日程第７、市会運営委員の選任を行います。
+　本件は、委員会条例第６条第２項の規定により、私から指名いたします。
+　お諮りいたします。
+　お手元に配付いたしました名簿のとおり、それぞれ指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_23"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が選任されました。（資料編396ページ参照）
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_24"></a><div><pre>○議長（清水富雄君）　次に、日程第８、市会運営委員会委員長及び同副委員長２人の選挙を行います。
+　お諮りいたします。
+　本件は、投票の手数を省略し、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_25"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　委員長に黒川勝君、副委員長に有村俊彦君と安西英俊君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_26"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_27"></a><div><pre>○議長（清水富雄君）　次に、日程第９、神奈川県内広域水道企業団議会議員４人の選挙を行います。
+　本件は、本市会から選出されております同企業団議会議員４人がこのたび辞職されましたので、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_28"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　瀬之間康浩君、関勝則君、藤崎浩太郎君、竹内康洋君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_29"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_30"></a><div><pre>○議長（清水富雄君）　次に、日程第10、神奈川県後期高齢者医療広域連合議会議員７人の選挙を行います。
+　本件は、本市会から選出されております同広域連合議会議員７人の任期が令和４年６月30日に満了することに伴い、その後任者を選挙するものであります。
+　お諮りいたします。
+　選挙の方法は、地方自治法第118条第２項の規定による指名推選とし、私から指名いたしたいと思いますが、御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_31"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、私から指名いたします。
+　磯部圭太君、伏見幸枝君、梶尾明君、花上喜代志君、尾崎太君、行田朝仁君、白井正子君を指名いたします。
+　ただいま指名いたしました方々を当選人と定めることに御異議ございませんか。
+　　　　　〔「異議なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_32"></a><div><pre>○議長（清水富雄君）　御異議ないものと認めます。
+　よって、ただいま指名いたしました方々が当選されました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_33"></a><div><pre>○議長（清水富雄君）　次に、日程第11、市第23号議案を議題といたします。
+　なお、本案につきましては、地方自治法第117条の規定により、該当の方の退席を求めます。
+　　　　　〔該当者退席〕
+</pre></div>
+			<a id="scroll_34"></a><div><pre>○議長（清水富雄君）　案はお手元に配付いたしておきました。
+　案の朗読は省略いたします。
+　市長から説明のため発言を求められておりますので、これを許します。山中市長。
+　　　　　〔市長　山中竹春君登壇〕
+</pre></div>
+			<a id="scroll_35"></a><div><pre>◎市長（山中竹春君）　市第23号議案について御説明いたします。
+　本案は、本市監査委員の選任に関する議案でありまして、市会議員のうちから選任された監査委員横山正人氏及び中山大輔氏から退職の願い出がありましたので、その後任者として松本研氏及び今野典人氏を選任いたしたく、地方自治法第196条第１項の規定により御同意をお願いするものであります。
+　よろしくお願いいたします。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_36"></a><div><pre>○議長（清水富雄君）　これより採決いたします。
+　採決の方法は、押しボタンによる記名投票といたします。
+　本案は、委員会付託を省略し、案のとおり同意することについて投票願います。
+　　　　　〔投票開始〕
+</pre></div>
+			<a id="scroll_37"></a><div><pre>○議長（清水富雄君）　押し間違いはございませんか。
+　　　　　〔「なし」と呼ぶ者あり〕
+</pre></div>
+			<a id="scroll_38"></a><div><pre>○議長（清水富雄君）　これにて投票を終了いたします。
+　　　　　〔投票終了〕
+</pre></div>
+			<a id="scroll_39"></a><div><pre>○議長（清水富雄君）　総数82、賛成71、反対11。（資料編398ページ参照）
+　よって、同意することに決定いたしました。
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+</pre></div>
+			<a id="scroll_40"></a><div><pre>○議長（清水富雄君）　これをもって本日の日程は全部終了いたしましたので、散会いたします。
+　　　　　午前10時16分散会
+　　　　　　市会議長　　　　清水富雄
+　　　　　　市会議員　　　　磯部圭太
+　　　　　　同　　　　　　　北谷まり
+</pre></div>
+		</div>
+	</div>
+</div>
+</div>
+					</div>
+				</div>
+			</form>
+			<nav>
+				<div class="top-janp">
+					<a href="#" class="link-top">↑&nbsp;&nbsp;ページ上部へ</a>
+				</div>
+			</nav>
+		</div>
+		<div id="dialogs">
+			<div id="put-post-it-dialog"></div>
+			<div id="related-minute-dialog" class="related-dialog"></div>
+			<div id="view-url-dialog"></div>
+			<div id="add-link-dialog"></div>
+		</div>
+	</div>
+
+
+</body></html>
