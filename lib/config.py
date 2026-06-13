@@ -129,10 +129,10 @@ class Config:
     num_topics: int = 8              # initial high-level topic nodes
     g_per_topic: int = 1             # candidate 議案 spawned per topic at brainstorm
     brainstorm_iters: int = 10        # research iterations per brainstorm grounding
-    research_selections: int = 50    # node selections in the research/G loop
+    research_selections: int = 40    # node selections in the research/G loop
     research_iters: int = 10          # conversation iterations per research execution
-    parliament_max: int = 3          # G nodes taken to parliament (others closed)
-    parliament_rounds: int = 6       # Q&A rounds per G
+    parliament_max: int = 6          # G nodes taken to parliament (others closed)
+    parliament_rounds: int = 3       # Q&A rounds per G
     refinement_selections: int = 10   # node selections in the refinement loop
     refinement_iters: int = 10      # conversation iterations per refinement research
     writeup_max: int = 3             # active G nodes written up at most
