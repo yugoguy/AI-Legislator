@@ -59,8 +59,12 @@ DEFAULT_MAX_TOKENS = 4096
 _RETRY_EXCEPTIONS = (
     openai.RateLimitError,
     openai.APITimeoutError,
+    openai.APIConnectionError,     # transport drop ("Server disconnected ...")
+    openai.InternalServerError,    # 5xx
     anthropic.RateLimitError,
     anthropic.APITimeoutError,
+    anthropic.APIConnectionError,
+    anthropic.InternalServerError,
 )
 
 
@@ -142,7 +146,7 @@ def client_for(model: str):
 
 # --- single-turn call -------------------------------------------------------
 
-@backoff.on_exception(backoff.expo, _RETRY_EXCEPTIONS)
+@backoff.on_exception(backoff.expo, _RETRY_EXCEPTIONS, max_tries=6)
 def get_response_from_llm(
     msg: str,
     client,
