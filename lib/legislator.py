@@ -28,6 +28,7 @@ def _call(spec, system, user, *, record=None, name="legislator", image_paths=Non
     content, history = get_response_from_llm(
         user, client, model, system, image_paths=image_paths,
         temperature=spec.temperature, max_tokens=spec.max_tokens,
+        reasoning_effort=spec.reasoning_effort,
     )
     if record:
         record(name, system, history, content)
@@ -71,15 +72,19 @@ def author_proposal(cfg: Config, stage: str, materials: str, g: GNode, *,
 
 
 def decide_action(cfg: Config, stage: str, proposal: str, summary: str, *,
-                  record=None) -> dict:
+                  allow_create: bool = True, record=None) -> dict:
     spec = cfg.model_for(stage, "legislator")
     lang = cfg.language_for(stage)
     system = prompts.UPDATE_DECISION_SYSTEM.format(region=cfg.region, language=lang)
+    actions = "update|create|close" if allow_create else "update|close"
     user = prompts.UPDATE_DECISION_USER.format(
-        proposal=proposal, summary=summary, region=cfg.region)
+        proposal=proposal, summary=summary, region=cfg.region,
+        actions=actions,
+        create_clause=prompts.CREATE_CLAUSE if allow_create else "")
     content = _call(spec, system, user, record=record, name="decide_action")
     decision = extract_json_between_markers(content) or {}
-    if decision.get("action") not in ("update", "create", "close"):
+    valid = ("update", "create", "close") if allow_create else ("update", "close")
+    if decision.get("action") not in valid:
         decision["action"] = "update"
     return decision
 
