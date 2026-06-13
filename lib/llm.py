@@ -153,6 +153,7 @@ def get_response_from_llm(
     msg_history: list[dict] | None = None,
     temperature: float = 0.75,
     max_tokens: int = DEFAULT_MAX_TOKENS,
+    reasoning_effort: str | None = None,
 ) -> tuple[str, list[dict]]:
     """One turn against `model`, threading `msg_history`.
 
@@ -214,14 +215,16 @@ def get_response_from_llm(
 
         if model.startswith(("gpt-5", "o1", "o3", "o4")):
             # Newer/reasoning models: use max_completion_tokens; no temperature.
+            # reasoning_effort is a reasoning-only knob; pass it only when set so
+            # non-reasoning models never receive an unsupported parameter.
             messages = [{"role": "user", "content": system_message}, *new_msg_history]
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                max_completion_tokens=max_tokens,
-                n=1,
-                seed=0,
+            kwargs = dict(
+                model=model, messages=messages,
+                max_completion_tokens=max_tokens, n=1, seed=0,
             )
+            if reasoning_effort is not None:
+                kwargs["reasoning_effort"] = reasoning_effort
+            response = client.chat.completions.create(**kwargs)
         else:
             messages = [{"role": "system", "content": system_message}, *new_msg_history]
             response = client.chat.completions.create(
