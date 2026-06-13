@@ -78,6 +78,7 @@ class DataAgent:
                     prompt, client, model, self.system_prompt,
                     image_paths=image_paths, msg_history=history,
                     temperature=self.spec.temperature, max_tokens=self.spec.max_tokens,
+                    reasoning_effort=self.spec.reasoning_effort,
                 )
                 if record:
                     record(f"data_agent_{i}", self.system_prompt, history, content)
