@@ -122,6 +122,7 @@ def run_research(
         content, history = get_response_from_llm(
             prompt, client, model, system, msg_history=history,
             temperature=spec.temperature, max_tokens=spec.max_tokens,
+            reasoning_effort=spec.reasoning_effort,
         )
         node.record_raw(f"research_{i}", system, history, content)
 
