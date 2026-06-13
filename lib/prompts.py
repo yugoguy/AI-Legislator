@@ -148,13 +148,18 @@ UPDATE_DECISION_SYSTEM = (
 UPDATE_DECISION_USER = (
     "Current proposal:\n---\n{proposal}\n---\n\nNew research summary:\n{summary}\n\n"
     "Decide one action and return ONLY a ```json object: "
-    "{{\"action\": \"update|create|close\", \"rationale\": \"...\"}}.\n"
+    "{{\"action\": \"{actions}\", \"rationale\": \"...\"}}.\n"
     "- 'update': the evidence refines THIS 議案 — revise it in place.\n"
-    "- 'create': the research revealed a distinct, also-promising direction — "
-    "spawn a new related 議案 (only when it genuinely differs).\n"
+    "{create_clause}"
     "- 'close': this 議案 is not viable for {region} (no support, wrong level of "
     "government, or contradicted by evidence) — retire it.\n"
     "Give a one-sentence rationale."
+)
+# The 'create' option, injected into UPDATE_DECISION_USER only when the active-G
+# cap leaves room to branch. Withheld (empty) once the cap is reached.
+CREATE_CLAUSE = (
+    "- 'create': the research revealed a distinct, also-promising direction — "
+    "spawn a new related 議案 (only when it genuinely differs).\n"
 )
 REWRITE_PROPOSAL_USER = (
     "Current proposal:\n---\n{proposal}\n---\n\nIncorporate this research "
