@@ -74,11 +74,10 @@ class LocalFetcher(ABC):
                                 its session's minutes (compact previews) so the
                                 agent can choose which to read.
           query == "hit=N"   -> READ: return the text window around occurrence N.
-          query == "<word>"  -> LOCATE using that keyword instead of the
-                                bill-derived term.
 
-        The search term defaults to the bill's own identifier (number or title);
-        the agent need not supply one to locate."""
+        The agent identifies the bill by `record_id` only; the implementation
+        derives the search term from the bill (its number). The agent does not
+        supply a keyword."""
 
 
 class LocalGovTool(BaseTool):
@@ -113,9 +112,10 @@ class LocalGovTool(BaseTool):
                 {"name": "query", "type": "str",
                  "description": "For action=search: a single-concept keyword "
                                 "(multiple terms are OR-matched). For "
-                                "action=minutes: leave empty to list occurrences, "
-                                "or pass \"hit=<N>\" to read occurrence N, or a "
-                                "keyword to search the minutes for that word."},
+                                "action=minutes: leave empty to list where this "
+                                "bill is discussed, then pass \"hit=<N>\" to read "
+                                "occurrence N. (Minutes are located by the bill's "
+                                "own number; you do not supply a keyword.)"},
                 {"name": "record_id", "type": "str",
                  "description": "Bill id for action=bill or action=minutes "
                                 "(from a search result)."},
