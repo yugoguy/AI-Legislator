@@ -40,7 +40,8 @@ def _stub_sdks() -> None:
         if not hasattr(openai, e):
             setattr(openai, e, type(e, (Exception,), {}))
 
-    for e in ("RateLimitError", "APITimeoutError", "Anthropic"):
+    for e in ("RateLimitError", "APITimeoutError", "APIConnectionError",
+              "InternalServerError", "Anthropic"):
         if not hasattr(anthropic, e):
             setattr(anthropic, e, type(e, (Exception,), {}))
 
