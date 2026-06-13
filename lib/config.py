@@ -152,7 +152,7 @@ class Config:
     eval_every: int = 2              # re-score a g with the Evaluator every N picks of it
 
     # --- Parallelism ---
-    batch_size: int = 3              # parallel work units per batch (no node overlap)
+    batch_size: int = 2              # parallel work units per batch (no node overlap)
 
     # --- Data agent / execution ---
     exec_timeout: int = 1800         # per code execution, seconds
