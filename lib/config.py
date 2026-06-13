@@ -66,7 +66,7 @@ class ModelSpec:
     # reasoning models (gpt-5*/o1/o3/o4) by llm.py; ignored for others. "low"
     # keeps hidden reasoning from eating the whole max_tokens budget on long
     # generations (the v1.3 empty-proposal bug). None => don't send the param.
-    reasoning_effort: str | None = "minimal"
+    reasoning_effort: str | None = "low"
 
 
 def _default_models() -> dict[str, ModelSpec]:
@@ -81,14 +81,14 @@ def _default_models() -> dict[str, ModelSpec]:
     LONG = 16000        # full 議案 Markdown (~9k chars observed) + reasoning headroom
     MED = 8000          # data-analysis scripts
     return {
-        "brainstorm:legislator": ModelSpec("gpt-5-mini", max_tokens=LONG),
+        "brainstorm:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
         "research:legislator": ModelSpec("gpt-5-mini", max_tokens=LONG),
         "research:coding": ModelSpec("gpt-5-mini", max_tokens=MED),
-        "parliament:parliament": ModelSpec("gpt-5-mini"),
+        "parliament:parliament": ModelSpec("gpt-5.4-mini"),
         "parliament:legislator": ModelSpec("gpt-5-mini"),  # short defense answers
         "refinement:legislator": ModelSpec("gpt-5-mini", max_tokens=LONG),
         "refinement:coding": ModelSpec("gpt-5-mini", max_tokens=MED),
-        "writeup:writeup": ModelSpec("gpt-5-mini", max_tokens=LONG),
+        "writeup:writeup": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
         # The Evaluator scores each 議案 for the UCB selection policy. Role is
         # stage-independent (scoring is the same wherever selection runs), so it
         # is keyed under a single pseudo-stage "select".
