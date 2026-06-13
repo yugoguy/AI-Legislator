@@ -66,7 +66,7 @@ class ModelSpec:
     # reasoning models (gpt-5*/o1/o3/o4) by llm.py; ignored for others. "low"
     # keeps hidden reasoning from eating the whole max_tokens budget on long
     # generations (the v1.3 empty-proposal bug). None => don't send the param.
-    reasoning_effort: str | None = "low"
+    reasoning_effort: str | None = "minimal"
 
 
 def _default_models() -> dict[str, ModelSpec]:
