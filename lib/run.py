@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
@@ -63,12 +64,52 @@ def pdf_renderer(markdown_text: str, out_path: Path) -> None:
     HTML(string=html, base_url=str(Path(out_path).parent)).write_pdf(str(out_path))
 
 
+def _redact_log_secrets() -> None:
+    """Install a LogRecord factory that masks API keys in every log line.
+
+    Covers all handlers and third-party loggers (backoff/requests/openai), incl.
+    handlers added later. Two passes: (1) literal values of key-like env vars,
+    (2) key-like URL query params. Affects emitted log text only — never what is
+    sent to any API, and never the on-disk node tree (that path is scrubbed at
+    source in estat.py).
+    """
+    secrets = [
+        v for k, v in os.environ.items()
+        if v and len(v) >= 8 and any(
+            t in k.upper() for t in
+            ("KEY", "TOKEN", "SECRET", "APP_ID", "APPID", "PASSWORD"))
+    ]
+    param_re = re.compile(
+        r'(?i)(appid|api[_-]?key|token|access[_-]?key|secret)=([^&\s"\']+)')
+    base = logging.getLogRecordFactory()
+
+    def factory(*args, **kwargs):
+        record = base(*args, **kwargs)
+        try:
+            msg = record.getMessage()
+        except Exception:
+            return record
+        red = param_re.sub(r"\1=***", msg)
+        for s in secrets:
+            if s in red:
+                red = red.replace(s, "***")
+        if red != msg:
+            record.msg, record.args = red, ()
+        return record
+
+    logging.setLogRecordFactory(factory)
+
+
 def main() -> None:
     debug = os.getenv("DEBUG") == "1"
     logging.basicConfig(
         level=logging.DEBUG if debug else logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
+    # Redact secrets from EVERY log line (incl. third-party loggers like
+    # backoff/requests/openai that log full request URLs). Masks key-like query
+    # params/values; only affects emitted text, never what is sent to any API.
+    _redact_log_secrets()
     log = logging.getLogger("ai-legislator")
 
     cfg = build_config(debug)
