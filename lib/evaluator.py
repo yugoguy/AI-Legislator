@@ -66,6 +66,7 @@ def evaluate(cfg: Config, g: GNode, *, record=None) -> tuple[float, dict]:
     content, history = get_response_from_llm(
         user, client, model, system,
         temperature=spec.temperature, max_tokens=spec.max_tokens,
+        reasoning_effort=spec.reasoning_effort,
     )
     if record:
         record("evaluate", system, history, content)
