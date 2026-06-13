@@ -166,9 +166,15 @@ def _apply_decision(cfg, tree, g: GNode, res: ResearchNode, result, stage) -> st
     g.append_research_summary(res.node_id, res.source, res.query_input,
                               result.summary, ok=True)
     proposal = g.read_proposal() or ""
+    # Withhold 'create' from the decision once the active-G cap is reached, and
+    # hard-coerce any stray create to update so branching can never exceed it.
+    allow_create = len(tree.g_nodes(active_only=True)) < cfg.max_g_nodes
     decision = legislator.decide_action(cfg, stage, proposal, result.summary,
+                                        allow_create=allow_create,
                                         record=g.record_raw)
     action = decision.get("action", "update")
+    if action == "create" and not allow_create:
+        action = "update"
     rationale = decision.get("rationale", "")
     g.record_decision(stage, action, rationale)
     if action == "close":
