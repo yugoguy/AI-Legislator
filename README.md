@@ -198,12 +198,12 @@ conda activate ai-giin
 source <(gpg -dq keys.txt.gpg)
 ```
 
-### Clone
+### Clone Code Files
 
 ```bash
-git clone https://github.com/yugoguy/AI-Legislator.git
-cp -r AI-Legislator/lib .
-rm -rf AI-Legislator
+git clone --filter=blob:none --sparse https://github.com/yugoguy/AI-Legislator.git
+cd AI-Legislator && git sparse-checkout set lib && cd ..
+cp -r AI-Legislator/lib . && rm -rf AI-Legislator
 ```
 
 ---
