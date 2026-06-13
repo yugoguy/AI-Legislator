@@ -46,6 +46,11 @@ class EstatTool(BaseTool):
         self.max_results = max_results
         self.app_id = os.getenv("ESTAT_APP_ID")
 
+    def _redact(self, text: str) -> str:
+        """Mask the appId so it never reaches recorded text (error strings carry
+        the full request URL incl. appId). Does not touch what is sent to e-Stat."""
+        return text.replace(self.app_id, "***") if self.app_id else text
+
     def use_tool(self, query: str = "", stats_data_id: str = "") -> ToolResult:
         if not self.app_id:
             return ToolResult(False, "e-Stat error: ESTAT_APP_ID is not set.")
@@ -56,9 +61,9 @@ class EstatTool(BaseTool):
                 return ToolResult(True, self._search_union(query))
             return ToolResult(False, "Provide either `query` or `stats_data_id`.")
         except requests.HTTPError as e:
-            return ToolResult(False, f"e-Stat HTTP error: {e}")
+            return ToolResult(False, self._redact(f"e-Stat HTTP error: {e}"))
         except requests.RequestException as e:
-            return ToolResult(False, f"e-Stat request error: {e}")
+            return ToolResult(False, self._redact(f"e-Stat request error: {e}"))
 
     def _search_union(self, query: str) -> str:
         """Search each whitespace-separated term separately and union results.
