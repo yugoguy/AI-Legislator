@@ -49,13 +49,27 @@ class ResearchResult:
     figures: list[str] = field(default_factory=list)
 
 
-def _tool_catalog(tools: dict) -> str:
-    lines = [
-        f'- {ANALYZE}: run a Python data-analysis/visualization task. '
-        f'ARGUMENTS {{"request": <str> what to analyze or plot, in words}}',
+def _data_files(data_dir: Path) -> list[str]:
+    """Data files the tools have downloaded into this node's working directory."""
+    return sorted(p.name for p in Path(data_dir).glob("*")
+                  if p.suffix.lower() in (".csv", ".json"))
+
+
+def _tool_catalog(tools: dict, data_files: list[str]) -> str:
+    lines = []
+    # AnalyzeData is offered only once data is on disk. With an empty working
+    # directory the agent could only analyze numbers it invented, so it is
+    # withheld until a tool has actually downloaded something.
+    if data_files:
+        lines.append(
+            f'- {ANALYZE}: run a Python data-analysis/visualization task over the '
+            f'downloaded data files ({", ".join(data_files)}). '
+            f'ARGUMENTS {{"request": <str> what to analyze or plot, in words}}'
+        )
+    lines.append(
         f'- {FINALIZE}: finish this research and report the result. '
-        f'ARGUMENTS {{"summary": <str> one or two sentences on what was found}}',
-    ]
+        f'ARGUMENTS {{"summary": <str> one or two sentences on what was found}}'
+    )
     for name, tool in tools.items():
         arg_hint = ", ".join(
             f'"{p["name"]}": <{p["type"]}> {p["description"]}'
@@ -90,24 +104,28 @@ def run_research(
     node.bump_stat("attempts")
     client, model = client_for(spec.model)
 
-    catalog = _tool_catalog(tools)
     tool_guidance = prompts.TOOL_GUIDANCE.format(
         region=region, region_level=region_level)
     today = _date.today().isoformat()
-    system = (
-        f"You are an AI legislator for {region} (level: {region_level}) "
-        "conducting evidence research. Each turn, choose exactly one tool and "
-        "respond ONLY as:\n"
-        "ACTION: <tool name>\n"
-        "ARGUMENTS: <a JSON object whose keys are that tool's listed arguments>\n\n"
-        f"Available tools (with their arguments):\n{catalog}\n\n"
-        f"{tool_guidance}\n\n"
-        f"Today's date is {today}; record it as the access date for any source "
-        "you use, so it can be cited. Note the exact identifier of each finding "
-        "(bill number, statistics table id, page title+URL, meeting date) for "
-        "later citation.\n\n"
-        f"Respond in {language}."
-    )
+
+    def build_system() -> str:
+        """System prompt for one turn. Rebuilt each turn because a download can
+        unlock AnalyzeData partway through the loop."""
+        catalog = _tool_catalog(tools, _data_files(node.data_dir))
+        return (
+            f"You are an AI legislator for {region} (level: {region_level}) "
+            "conducting evidence research. Each turn, choose exactly one tool and "
+            "respond ONLY as:\n"
+            "ACTION: <tool name>\n"
+            "ARGUMENTS: <a JSON object whose keys are that tool's listed arguments>\n\n"
+            f"Available tools (with their arguments):\n{catalog}\n\n"
+            f"{tool_guidance}\n\n"
+            f"Today's date is {today}; record it as the access date for any source "
+            "you use, so it can be cited. Note the exact identifier of each finding "
+            "(bill number, statistics table id, page title+URL, meeting date) for "
+            "later citation.\n\n"
+            f"Respond in {language}."
+        )
     goal = stage_prompt.format(region=region, region_level=region_level, topic=topic)
     prompt = f"{goal}\n\nContext:\n{context}\n\nBegin your research."
 
@@ -119,6 +137,7 @@ def run_research(
     summary = ""
 
     for i in range(iters):
+        system = build_system()
         content, history = get_response_from_llm(
             prompt, client, model, system, msg_history=history,
             temperature=spec.temperature, max_tokens=spec.max_tokens,
@@ -135,7 +154,14 @@ def run_research(
             last_ok = True
             break
 
-        if action == ANALYZE:
+        if action == ANALYZE and not _data_files(node.data_dir):
+            # Withheld from the catalog, but refuse it explicitly too: analyzing
+            # an empty directory can only produce invented numbers.
+            last_ok = False
+            prompt = ("AnalyzeData is unavailable: no data files have been "
+                      "downloaded yet. Download a table first (e.g. SearchEStat "
+                      "with stats_data_id), then analyze it.")
+        elif action == ANALYZE:
             request = (args or {}).get("request", "")
             res = data_agent.run(request, node.data_dir,
                                  record=node.record_raw)
@@ -150,7 +176,12 @@ def run_research(
                       f"Output:\n```\n{feedback}\n```\nContinue, or Finalize.")
         elif action in tools:
             try:
-                result = tools[action].use_tool(**(args or {}))
+                # Tools that download a payload write it into this node's data
+                # dir, which is the working directory AnalyzeData later runs in.
+                tool = tools[action]
+                if hasattr(tool, "set_data_dir"):
+                    tool.set_data_dir(node.data_dir)
+                result = tool.use_tool(**(args or {}))
                 last_ok = bool(getattr(result, "ok", True))
                 out = getattr(result, "text", str(result))
             except Exception as e:                       # unexpected tool crash
