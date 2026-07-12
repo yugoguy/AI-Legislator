@@ -38,8 +38,14 @@ def _call(spec, system, user, *, record=None, name="legislator", image_paths=Non
 
 
 def _citation_format(cfg: Config) -> str:
-    """Region-filled citation-format block injected into drafting/write-up prompts."""
+    """Region-filled citation-format block, nested inside the format template."""
     return prompts.CITATION_FORMAT.format(region=cfg.region)
+
+
+def _proposal_format(cfg: Config) -> str:
+    """The document template every drafting stage must produce (prompts)."""
+    return prompts.PROPOSAL_FORMAT.format(
+        region=cfg.region, citation_format=_citation_format(cfg))
 
 
 def generate_topics(cfg: Config) -> list[str]:
