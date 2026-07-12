@@ -126,16 +126,16 @@ class Config:
     languages: dict[str, str] = field(default_factory=_default_languages)
 
     # --- Stage sizes / iteration counts ---
-    num_topics: int = 8              # initial high-level topic nodes
+    num_topics: int = 6              # initial high-level topic nodes
     g_per_topic: int = 1             # candidate 議案 spawned per topic at brainstorm
-    brainstorm_iters: int = 10        # research iterations per brainstorm grounding
-    research_selections: int = 40    # node selections in the research/G loop
-    research_iters: int = 8          # conversation iterations per research execution
-    parliament_max: int = 6          # G nodes taken to parliament (others closed)
+    brainstorm_iters: int = 6        # research iterations per brainstorm grounding
+    research_selections: int = 30    # node selections in the research/G loop
+    research_iters: int = 6          # conversation iterations per research execution
+    parliament_max: int = 4          # G nodes taken to parliament (others closed)
     parliament_rounds: int = 3       # Q&A rounds per G
-    refinement_selections: int = 8   # node selections in the refinement loop
-    refinement_iters: int = 10      # conversation iterations per refinement research
-    writeup_max: int = 3             # active G nodes written up at most
+    refinement_selections: int = 9   # node selections in the refinement loop
+    refinement_iters: int = 6      # conversation iterations per refinement research
+    writeup_max: int = 4             # active G nodes written up at most
 
     # Cap on simultaneously ACTIVE 議案. Once reached, the legislator's per-step
     # decision is offered only update|close (no 'create'), and the orchestrator
