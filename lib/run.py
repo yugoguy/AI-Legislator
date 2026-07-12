@@ -50,18 +50,51 @@ def build_config(debug: bool) -> Config:
 
 # --- PDF renderer (the one external toolchain; swappable) -------------------
 
+# The stylesheet, not the model, decides what the 議案 looks like. The prompt
+# fixes the section structure; this fixes the typography, so every 議案 renders
+# as the same document no matter which model wrote it.
+PDF_CSS = """
+@page { size: A4; margin: 25mm 20mm; @bottom-center { content: counter(page); font-size: 9pt; color: #666; } }
+body { font-family: "Noto Sans CJK JP", "Noto Sans JP", "IPAexGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
+       font-size: 10.5pt; line-height: 1.8; color: #111; }
+h1 { font-size: 16pt; text-align: center; border-bottom: 1.5pt solid #111;
+     padding-bottom: 8pt; margin: 0 0 6pt; }
+h1 + p { text-align: center; font-size: 9.5pt; color: #444; margin: 0 0 20pt; }
+h2 { font-size: 12pt; margin: 20pt 0 8pt; padding-left: 6pt;
+     border-left: 3pt solid #111; page-break-after: avoid; }
+h3 { font-size: 11pt; margin: 14pt 0 6pt; page-break-after: avoid; }
+p, li { text-align: justify; }
+ul, ol { padding-left: 18pt; }
+table { border-collapse: collapse; width: 100%; margin: 10pt 0; font-size: 9.5pt; }
+th, td { border: 0.5pt solid #999; padding: 4pt 6pt; }
+th { background: #f0f0f0; }
+img { max-width: 100%; margin: 10pt auto; display: block; }
+/* 出典 is a reference list: tighter, smaller, and it never breaks mid-entry. */
+h2:last-of-type ~ ul li { font-size: 9pt; line-height: 1.5; margin-bottom: 3pt;
+                          page-break-inside: avoid; }
+code, pre { font-family: monospace; font-size: 9pt; background: #f5f5f5; }
+"""
+
+
 def pdf_renderer(markdown_text: str, out_path: Path) -> None:
-    """markdown -> HTML -> PDF via weasyprint; raises clearly if deps absent."""
+    """markdown -> HTML -> PDF via weasyprint; raises clearly if deps absent.
+
+    A Japanese font must be installed or every label renders as tofu (matplotlib's
+    and weasyprint's default fonts carry no CJK glyphs):
+        apt-get install fonts-noto-cjk
+    """
     try:
         import markdown as md_lib
-        from weasyprint import HTML
+        from weasyprint import HTML, CSS
     except ImportError as e:
         raise RuntimeError(
             "PDF rendering requires `markdown` and `weasyprint`. Install them or "
             "swap pdf_renderer for another markdown->PDF toolchain."
         ) from e
-    html = md_lib.markdown(markdown_text, extensions=["tables"])
-    HTML(string=html, base_url=str(Path(out_path).parent)).write_pdf(str(out_path))
+    html = md_lib.markdown(markdown_text, extensions=["tables", "attr_list"])
+    HTML(string=f"<article>{html}</article>",
+         base_url=str(Path(out_path).parent)).write_pdf(
+        str(out_path), stylesheets=[CSS(string=PDF_CSS)])
 
 
 def _redact_log_secrets() -> None:
