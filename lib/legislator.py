@@ -17,7 +17,9 @@ Responsibilities:
 from __future__ import annotations
 
 from llm import client_for, get_response_from_llm
-from response import extract_json_between_markers, extract_text_up_to_code
+import re
+
+from response import extract_json_between_markers
 from config import Config
 from node import GNode
 import prompts
@@ -65,7 +67,7 @@ def author_proposal(cfg: Config, stage: str, materials: str, g: GNode, *,
     lang = cfg.language_for(stage)
     system = prompts.BUILD_PROPOSAL_SYSTEM.format(
         region=cfg.region, region_level=cfg.region_level, language=lang,
-        citation_format=_citation_format(cfg))
+        proposal_format=_proposal_format(cfg))
     user = prompts.BUILD_PROPOSAL_USER.format(materials=materials, region=cfg.region)
     content = _call(spec, system, user, record=record, name="author_proposal")
     _apply_proposal(content, g)
@@ -95,7 +97,7 @@ def rewrite_proposal(cfg: Config, stage: str, proposal: str, summary: str, g: GN
     lang = cfg.language_for(stage)
     system = prompts.BUILD_PROPOSAL_SYSTEM.format(
         region=cfg.region, region_level=cfg.region_level, language=lang,
-        citation_format=_citation_format(cfg))
+        proposal_format=_proposal_format(cfg))
     user = prompts.REWRITE_PROPOSAL_USER.format(
         proposal=proposal, summary=summary, region=cfg.region)
     content = _call(spec, system, user, record=record, name="rewrite_proposal")
@@ -124,17 +126,38 @@ def write_up(cfg: Config, context: str, g: GNode, *, record=None) -> None:
     spec = cfg.model_for("writeup", "writeup")
     lang = cfg.language_for("writeup")
     system = prompts.WRITEUP_SYSTEM.format(
-        region=cfg.region, region_level=cfg.region_level, language=lang)
-    user = prompts.WRITEUP_USER.format(context=context, region=cfg.region,
-                                       citation_format=_citation_format(cfg))
+        region=cfg.region, region_level=cfg.region_level, language=lang,
+        proposal_format=_proposal_format(cfg))
+    user = prompts.WRITEUP_USER.format(context=context, region=cfg.region)
     content = _call(spec, system, user, record=record, name="write_up")
     _apply_proposal(content, g)
 
 
+_JSON_BLOCK = re.compile(r"```json\s*(\{.*?\})\s*```", re.DOTALL)
+_WRAPPER = re.compile(r"\A\s*```(?:markdown|md)?\s*\n(.*)\n\s*```\s*\Z", re.DOTALL)
+
+
 def _apply_proposal(content: str, g: GNode) -> None:
-    """Split model output into proposal Markdown + a trailing title JSON block."""
-    titles = extract_json_between_markers(content) or {}
-    md = extract_text_up_to_code(content) or content
+    """Split model output into the proposal Markdown and its trailing title JSON.
+
+    The document is everything up to the closing ```json block, with a wrapping
+    fence stripped when the model wrapped the whole body in one. Splitting at the
+    FIRST fence instead, as before, truncated any proposal that contained a fence
+    and left the fence markers in the text when the body was wrapped.
+    """
+    m = _JSON_BLOCK.search(content)
+    if m:
+        titles = extract_json_between_markers(m.group(0)) or {}
+        md = content[: m.start()]
+    else:
+        # No title block: keep the whole reply, fall back to a loose JSON scan.
+        titles = extract_json_between_markers(content) or {}
+        md = content
+
+    w = _WRAPPER.match(md.strip())
+    if w:
+        md = w.group(1)
+
     g.write_proposal(md.strip())
     # set_titles logs the change into g.title_history (incl. the first title).
     g.set_titles(titles.get("title_en"), titles.get("title_ja"))
