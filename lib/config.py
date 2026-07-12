@@ -82,12 +82,12 @@ def _default_models() -> dict[str, ModelSpec]:
     MED = 8000          # data-analysis scripts
     return {
         "brainstorm:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
-        "research:legislator": ModelSpec("gpt-5-mini", max_tokens=LONG),
-        "research:coding": ModelSpec("gpt-5-mini", max_tokens=MED),
+        "research:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
+        "research:coding": ModelSpec("gpt-5.4-mini", max_tokens=MED),
         "parliament:parliament": ModelSpec("gpt-5.4-mini"),
-        "parliament:legislator": ModelSpec("gpt-5-mini"),  # short defense answers
-        "refinement:legislator": ModelSpec("gpt-5-mini", max_tokens=LONG),
-        "refinement:coding": ModelSpec("gpt-5-mini", max_tokens=MED),
+        "parliament:legislator": ModelSpec("gpt-5.4-mini"),  # short defense answers
+        "refinement:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
+        "refinement:coding": ModelSpec("gpt-5.4-mini", max_tokens=MED),
         "writeup:writeup": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
         # The Evaluator scores each 議案 for the UCB selection policy. Role is
         # stage-independent (scoring is the same wherever selection runs), so it
@@ -129,11 +129,11 @@ class Config:
     num_topics: int = 6              # initial high-level topic nodes
     g_per_topic: int = 1             # candidate 議案 spawned per topic at brainstorm
     brainstorm_iters: int = 6        # research iterations per brainstorm grounding
-    research_selections: int = 30    # node selections in the research/G loop
+    research_selections: int = 24    # node selections in the research/G loop
     research_iters: int = 6          # conversation iterations per research execution
     parliament_max: int = 4          # G nodes taken to parliament (others closed)
     parliament_rounds: int = 3       # Q&A rounds per G
-    refinement_selections: int = 9   # node selections in the refinement loop
+    refinement_selections: int = 8   # node selections in the refinement loop
     refinement_iters: int = 6      # conversation iterations per refinement research
     writeup_max: int = 4             # active G nodes written up at most
 
