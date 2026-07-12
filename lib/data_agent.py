@@ -96,7 +96,7 @@ class DataAgent:
 
                 last = DataAgentResult(
                     success=success, term_out=term,
-                    figures=[str(p) for p in new_figs] or last.figures, code=code,
+                    figures=[str(p) for p in new_figs], code=code,
                 )
                 if success:
                     prompt = (
