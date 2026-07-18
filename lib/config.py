@@ -62,24 +62,37 @@ class ModelSpec:
     model: str
     temperature: float = 0.8
     max_tokens: int = 4096
+    # Reasoning-model effort ("minimal"|"low"|"medium"|"high"). Sent ONLY to
+    # reasoning models (gpt-5*/o1/o3/o4) by llm.py; ignored for others. "low"
+    # keeps hidden reasoning from eating the whole max_tokens budget on long
+    # generations (the v1.3 empty-proposal bug). None => don't send the param.
+    reasoning_effort: str | None = "low"
 
 
 def _default_models() -> dict[str, ModelSpec]:
     """Default per-(stage, role) models, keyed "stage:role".
+
+    max_tokens is raised on roles that emit a FULL proposal/script; reasoning
+    tokens are drawn from this budget, so the short 4096 default truncated long
+    writes to empty in v1.3. Long-write roles: legislator (author/rewrite at
+    brainstorm/research/refinement) and writeup. coding (data agent) is medium.
+    Short roles (parliament Q&A, evaluator, decide_action) keep the 4096 default.
     """
+    LONG = 16000        # full 議案 Markdown (~9k chars observed) + reasoning headroom
+    MED = 8000          # data-analysis scripts
     return {
-        "brainstorm:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:legislator": ModelSpec("gpt-5.4-mini"),
-        "research:coding": ModelSpec("gpt-5.4-mini"),
+        "brainstorm:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
+        "research:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
+        "research:coding": ModelSpec("gpt-5.4-mini", max_tokens=MED),
         "parliament:parliament": ModelSpec("gpt-5.4-mini"),
-        "parliament:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:legislator": ModelSpec("gpt-5.4-mini"),
-        "refinement:coding": ModelSpec("gpt-5.4-mini"),
-        "writeup:writeup": ModelSpec("gpt-5.4-mini"),
+        "parliament:legislator": ModelSpec("gpt-5.4-mini"),  # short defense answers
+        "refinement:legislator": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
+        "refinement:coding": ModelSpec("gpt-5.4-mini", max_tokens=MED),
+        "writeup:writeup": ModelSpec("gpt-5.4-mini", max_tokens=LONG),
         # The Evaluator scores each 議案 for the UCB selection policy. Role is
         # stage-independent (scoring is the same wherever selection runs), so it
         # is keyed under a single pseudo-stage "select".
-        "select:evaluator": ModelSpec("gpt-5.4-mini"),
+        "select:evaluator": ModelSpec("gpt-5-mini"),
     }
 
 
@@ -113,37 +126,44 @@ class Config:
     languages: dict[str, str] = field(default_factory=_default_languages)
 
     # --- Stage sizes / iteration counts ---
-    num_topics: int = 5              # initial high-level topic nodes
-    g_per_topic: int = 2             # candidate 議案 spawned per topic at brainstorm
-    brainstorm_iters: int = 4        # research iterations per brainstorm grounding
-    research_selections: int = 20    # node selections in the research/G loop
+    num_topics: int = 6              # initial high-level topic nodes
+    g_per_topic: int = 1             # candidate 議案 spawned per topic at brainstorm
+    brainstorm_iters: int = 6        # research iterations per brainstorm grounding
+    research_selections: int = 24    # node selections in the research/G loop
     research_iters: int = 6          # conversation iterations per research execution
-    parliament_max: int = 3          # G nodes taken to parliament (others closed)
-    parliament_rounds: int = 6       # Q&A rounds per G
+    parliament_max: int = 4          # G nodes taken to parliament (others closed)
+    parliament_rounds: int = 3       # Q&A rounds per G
     refinement_selections: int = 8   # node selections in the refinement loop
-    refinement_iters: int = 6        # conversation iterations per refinement research
-    writeup_max: int = 3             # active G nodes written up at most
+    refinement_iters: int = 6      # conversation iterations per refinement research
+    writeup_max: int = 4             # active G nodes written up at most
+
+    # Cap on simultaneously ACTIVE 議案. Once reached, the legislator's per-step
+    # decision is offered only update|close (no 'create'), and the orchestrator
+    # hard-coerces any stray 'create' to 'update'. Brainstorm seeding is NOT
+    # gated by this (it creates the initial num_topics * g_per_topic directly);
+    # the cap only limits research/refinement branching. Closing a G frees a slot.
+    max_g_nodes: int = 16
 
     # --- Selection policy (UCB over active 議案) ---
     # Pick score = Q(g) + ucb_c * sqrt(ln N_i / n_i), normalized over active G to
     # a sampling distribution. Q in [0,1] from the Evaluator; n_i = research count
     # of g; N_i = selection rounds g has been present for. See research_selection.
-    ucb_c: float = 1.0               # exploration weight (UCB1 standard is sqrt(2))
-    eval_every: int = 1              # re-score a g with the Evaluator every N picks of it
+    ucb_c: float = 0.5               # exploration weight (UCB1 standard is sqrt(2))
+    eval_every: int = 2              # re-score a g with the Evaluator every N picks of it
 
     # --- Parallelism ---
-    batch_size: int = 3              # parallel work units per batch (no node overlap)
+    batch_size: int = 2              # parallel work units per batch (no node overlap)
 
     # --- Data agent / execution ---
-    exec_timeout: int = 1200         # per code execution, seconds
+    exec_timeout: int = 1800         # per code execution, seconds
     data_agent_iters: int = 4        # generate->run->reflect rounds
 
     # --- Web search (SearchWeb tool, provider-native server-side search) ---
     # Model that executes web searches, independent of the legislator model. Any
     # Anthropic model supports the native web-search tool; for an OpenAI executor
     # this must be a search-capable model (e.g. "gpt-4o-mini-search-preview").
-    web_search_model: str = "claude-haiku-4-5-20251001"
-    web_search_max_results: int = 5
+    web_search_model: str = "gpt-4o-mini-search-preview"
+    web_search_max_results: int = 10
 
     # --- Local-government data (SearchLocalGov bridge tool) ---
     # Per-region local datasets (assembly bills/petitions + minutes). The bridge
@@ -153,7 +173,7 @@ class Config:
     local_sources: dict = field(default_factory=lambda: {
         "横浜市": {"available": True, "path": "./data/yokohama_gikai_db"},
     })
-    local_max_results: int = 10
+    local_max_results: int = 5
 
     # --- Resource ceiling (advisory; enforced by the orchestrator) ---
     max_total_llm_calls: int = 0     # 0 = unlimited

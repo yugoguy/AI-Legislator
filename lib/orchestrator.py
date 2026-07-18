@@ -70,7 +70,11 @@ def evolve(
 # --- stage: brainstorm ------------------------------------------------------
 
 def _brainstorm(cfg: Config, tree: Tree, tools: dict) -> None:
-    topics = legislator.generate_topics(cfg)
+    try:
+        topics = legislator.generate_topics(cfg)
+    except Exception as e:                       # transient API failure after retries
+        log.error("  [brainstorm] topic generation failed hard: %s", e)
+        topics = []
     for text in topics:
         topic = tree.new_node(TOPIC, "brainstorm", topic_text=text,
                               region=cfg.region, region_level=cfg.region_level)
@@ -79,33 +83,38 @@ def _brainstorm(cfg: Config, tree: Tree, tools: dict) -> None:
         for _ in range(cfg.g_per_topic):
             res: ResearchNode = tree.new_node(RESEARCH, "brainstorm",
                                               parent_id=topic.node_id)
-            result = research_mod.run_research(
-                res, context=f"Topic: {text}", topic=text,
-                stage_prompt=prompts.BRAINSTORM_RESEARCH,
-                language=cfg.language_for("brainstorm"),
-                spec=cfg.model_for("brainstorm", "legislator"),
-                region=cfg.region, region_level=cfg.region_level,
-                tools=tools,
-                data_agent=_data_agent(cfg, "research"),
-                iters=cfg.brainstorm_iters,
-            )
-            tree.save(res)
-            if result.status != COMPLETE:
-                log.info("  [brainstorm] topic %s: research_fail (no 議案 spawned)",
-                         topic.node_id)
+            try:
+                result = research_mod.run_research(
+                    res, context=f"Topic: {text}", topic=text,
+                    stage_prompt=prompts.BRAINSTORM_RESEARCH,
+                    language=cfg.language_for("brainstorm"),
+                    spec=cfg.model_for("brainstorm", "legislator"),
+                    region=cfg.region, region_level=cfg.region_level,
+                    tools=tools,
+                    data_agent=_data_agent(cfg, "research"),
+                    iters=cfg.brainstorm_iters,
+                )
+                tree.save(res)
+                if result.status != COMPLETE:
+                    log.info("  [brainstorm] topic %s: research_fail (no 議案 spawned)",
+                             topic.node_id)
+                    continue
+                g: GNode = tree.new_node(G, "brainstorm", parent_id=topic.node_id,
+                                         origin_topic=text)
+                legislator.author_proposal(cfg, "brainstorm",
+                                           _materials_str(result), g, record=g.record_raw)
+                g.append_research_summary(res.node_id, res.source, res.query_input,
+                                          result.summary, ok=True)
+                g.bump_stat("research_count")
+                tree.save(g)
+                log.info("  [brainstorm] topic %s -> %s  %s",
+                         topic.node_id, g.node_id, g.title_ja or "(untitled)")
+                topic.bump_stat("g_spawned")
+                tree.save(topic)
+            except Exception as e:               # contain one G's failure, keep going
+                log.warning("  [brainstorm] topic %s: hard failure, skipping 議案: %s",
+                            topic.node_id, e)
                 continue
-            g: GNode = tree.new_node(G, "brainstorm", parent_id=topic.node_id,
-                                     origin_topic=text)
-            legislator.author_proposal(cfg, "brainstorm",
-                                       _materials_str(result), g, record=g.record_raw)
-            g.append_research_summary(res.node_id, res.source, res.query_input,
-                                      result.summary, ok=True)
-            g.bump_stat("research_count")
-            tree.save(g)
-            log.info("  [brainstorm] topic %s -> %s  %s",
-                     topic.node_id, g.node_id, g.title_ja or "(untitled)")
-            topic.bump_stat("g_spawned")
-            tree.save(topic)
     tree.update_progress()
 
 
@@ -130,14 +139,20 @@ def _research_loop(cfg: Config, tree: Tree, tools: dict,
 
         def work(unit):
             g, res = unit
-            return research_mod.run_research(
-                res, context=_g_context(cfg, g), topic=g.origin_topic,
-                stage_prompt=stage_prompt,
-                language=cfg.language_for(stage),
-                spec=cfg.model_for(stage, "legislator"),
-                region=cfg.region, region_level=cfg.region_level,
-                tools=tools, data_agent=_data_agent(cfg, stage), iters=iters,
-            )
+            try:
+                return research_mod.run_research(
+                    res, context=_g_context(cfg, g), topic=g.origin_topic,
+                    stage_prompt=stage_prompt,
+                    language=cfg.language_for(stage),
+                    spec=cfg.model_for(stage, "legislator"),
+                    region=cfg.region, region_level=cfg.region_level,
+                    tools=tools, data_agent=_data_agent(cfg, stage), iters=iters,
+                )
+            except Exception as e:               # contain inside the thread; no crash
+                log.warning("  [%s] %s: research hard failure: %s",
+                            stage, g.node_id, e)
+                return research_mod.ResearchResult(
+                    status=INCOMPLETE, summary=f"hard failure: {e}")
 
         with ThreadPoolExecutor(max_workers=cfg.batch_size) as ex:
             results = list(ex.map(work, units))
@@ -148,7 +163,13 @@ def _research_loop(cfg: Config, tree: Tree, tools: dict,
             g.bump_stat("times_selected")
             g.bump_stat("research_count")
             if result.status == COMPLETE:
-                action = _apply_decision(cfg, tree, g, res, result, stage)
+                try:
+                    action = _apply_decision(cfg, tree, g, res, result, stage)
+                except Exception as e:           # decide/author/rewrite hard failure
+                    action = "decision_fail"
+                    g.record_decision(stage, action, rationale=str(e)[:200])
+                    log.warning("  [%s] %s: decision hard failure, skipping: %s",
+                                stage, g.node_id, e)
             else:
                 # Research left the node INCOMPLETE: record the failure so it is
                 # visible and counts as a (failed) attempt; no proposal change.
@@ -166,9 +187,15 @@ def _apply_decision(cfg, tree, g: GNode, res: ResearchNode, result, stage) -> st
     g.append_research_summary(res.node_id, res.source, res.query_input,
                               result.summary, ok=True)
     proposal = g.read_proposal() or ""
+    # Withhold 'create' from the decision once the active-G cap is reached, and
+    # hard-coerce any stray create to update so branching can never exceed it.
+    allow_create = len(tree.g_nodes(active_only=True)) < cfg.max_g_nodes
     decision = legislator.decide_action(cfg, stage, proposal, result.summary,
+                                        allow_create=allow_create,
                                         record=g.record_raw)
     action = decision.get("action", "update")
+    if action == "create" and not allow_create:
+        action = "update"
     rationale = decision.get("rationale", "")
     g.record_decision(stage, action, rationale)
     if action == "close":
@@ -203,7 +230,10 @@ def _parliament(cfg: Config, tree: Tree, parliament_select, pdf_renderer) -> Non
     for g_id in selected:
         g: GNode = tree.get(g_id)
         parl = tree.new_node(PARLIAMENT, "parliament", parent_id=g.node_id, g_id=g_id)
-        parliament_mod.run_parliament(cfg, g, parl, pdf_renderer=pdf_renderer)
+        try:
+            parliament_mod.run_parliament(cfg, g, parl, pdf_renderer=pdf_renderer)
+        except Exception as e:                   # one G's Q&A fails -> skip, keep run
+            log.warning("  [parliament] %s: hard failure, skipping: %s", g_id, e)
         tree.save(parl)
         g.set_stat("went_to_parliament", True)
         tree.save(g)
@@ -219,8 +249,12 @@ def _writeup(cfg: Config, tree: Tree) -> None:
         reflections = "\n\n".join(p.reflection for p in parls)
         context = (f"PROPOSAL:\n{g.read_proposal() or ''}\n\n"
                    f"PARLIAMENT REFLECTIONS:\n{reflections}")
-        legislator.write_up(cfg, context, g, record=g.record_raw)
-        tree.save(g)
+        try:
+            legislator.write_up(cfg, context, g, record=g.record_raw)
+            tree.save(g)
+        except Exception as e:                   # keep the pre-writeup proposal
+            log.warning("  [writeup] %s: hard failure, keeping prior proposal: %s",
+                        g.node_id, e)
     tree.update_progress()
 
 

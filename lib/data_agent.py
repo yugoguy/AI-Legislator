@@ -78,6 +78,7 @@ class DataAgent:
                     prompt, client, model, self.system_prompt,
                     image_paths=image_paths, msg_history=history,
                     temperature=self.spec.temperature, max_tokens=self.spec.max_tokens,
+                    reasoning_effort=self.spec.reasoning_effort,
                 )
                 if record:
                     record(f"data_agent_{i}", self.system_prompt, history, content)
@@ -95,7 +96,7 @@ class DataAgent:
 
                 last = DataAgentResult(
                     success=success, term_out=term,
-                    figures=[str(p) for p in new_figs] or last.figures, code=code,
+                    figures=[str(p) for p in new_figs], code=code,
                 )
                 if success:
                     prompt = (

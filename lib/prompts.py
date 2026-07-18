@@ -52,6 +52,44 @@ TOOL_GUIDANCE = (
 # Structured citation format, reused by drafting and write-up prompts. Every
 # external fact must map to one of these per-source templates so 出典 entries are
 # uniform and verifiable, and always carry an access date.
+PROPOSAL_FORMAT = (
+    "OUTPUT FORMAT — follow exactly. Emit the proposal in Markdown, then a "
+    "single ```json block carrying the titles, and nothing else. Do not use a "
+    "code fence anywhere in the Markdown body, and do not wrap the body in one.\n\n"
+    "# <日本語タイトル>\n"
+    "**English title:** <English title>\n"
+    "**対象自治体:** {region}\n\n"
+    "## 1. 本文\n"
+    "The measure itself: the target population or area, the implementing body, "
+    "the measures, the timeline, and the budget or funding source. State a figure "
+    "only where the evidence supports it. Reference a figure produced by analysis "
+    "by its assets/ path.\n\n"
+    "## 2. 提案理由\n"
+    "The public problem, why action at this level of government is needed, and how "
+    "the evidence supports the measure. Keep confirmed facts separate from "
+    "assumptions and open questions.\n\n"
+    "## 3. 検証計画\n"
+    "Mandatory. How the proposal is to be verified before or during "
+    "implementation:\n"
+    "- the evidence gap that remains\n"
+    "- what data is to be collected, by whom, and how often\n"
+    "- the indicators by which effectiveness is judged\n"
+    "- whether a pilot or social experiment is warranted, and if so its area, "
+    "duration, and success criteria. Do not force a pilot where the measure does "
+    "not call for one.\n\n"
+    "## 4. 出典\n"
+    "One bullet per source, drawn only from what the research actually gathered, "
+    "each in the template below for its source type. Identifiers and URLs belong "
+    "here, not in 本文 or 提案理由. A claim the research does not support is "
+    "dropped, or moved to 検証計画 as an item to verify.\n\n"
+    "{citation_format}\n\n"
+    "After the Markdown, close with exactly:\n"
+    "```json\n"
+    '{{"title_en": "<English title>", "title_ja": "<日本語タイトル>"}}\n'
+    "```"
+)
+
+
 CITATION_FORMAT = (
     "出典 (citation) format — every external fact MUST have an entry, and each "
     "entry MUST include what was used, its identifier, the specific location of "
@@ -120,26 +158,18 @@ REFINEMENT_RESEARCH = (
 # --- proposal authoring / update (legislator) ---
 BUILD_PROPOSAL_SYSTEM = (
     "You are an AI legislator drafting a 議案 (bill/proposal) for {region} "
-    "(level: {region_level}). Write a complete, SPECIFIC proposal in Markdown "
-    "with these sections:\n"
-    "- a title line with both English and Japanese titles\n"
-    "- 本文: the operative proposal — concrete measures, who does what, scope, "
-    "and where possible figures or targets drawn from the evidence\n"
-    "- 提案理由: the reasons, tied to the specific evidence gathered\n"
-    "- 出典: a citation entry for EVERY external fact, in the required format\n"
+    "(level: {region_level}). Write a complete, SPECIFIC proposal.\n\n"
     "CITATION QUALITY IS CRITICAL. Every external fact, statistic, or quotation "
     "must be traceable to its exact origin. Do not state a figure without saying "
     "where it came from. If the evidence is thin, say so plainly rather than "
-    "padding with unsourced generalities. Reference figures by relative path "
-    "under assets/ if provided.\n\n"
-    "{citation_format}\n\n"
+    "padding with unsourced generalities.\n\n"
+    "{proposal_format}\n\n"
     "Respond in {language}."
 )
 BUILD_PROPOSAL_USER = (
     "Research findings:\n{materials}\n\n"
-    "Write the full proposal Markdown now, keeping it specific to {region} and "
-    "grounded in the findings above. Also return a JSON object with keys "
-    "\"title_en\" and \"title_ja\" in a ```json block after the Markdown."
+    "Write the full proposal now, keeping it specific to {region} and grounded in "
+    "the findings above. Follow the output format exactly."
 )
 UPDATE_DECISION_SYSTEM = (
     "You are an AI legislator deciding what to do with a 議案 after a completed "
@@ -148,20 +178,24 @@ UPDATE_DECISION_SYSTEM = (
 UPDATE_DECISION_USER = (
     "Current proposal:\n---\n{proposal}\n---\n\nNew research summary:\n{summary}\n\n"
     "Decide one action and return ONLY a ```json object: "
-    "{{\"action\": \"update|create|close\", \"rationale\": \"...\"}}.\n"
+    "{{\"action\": \"{actions}\", \"rationale\": \"...\"}}.\n"
     "- 'update': the evidence refines THIS 議案 — revise it in place.\n"
-    "- 'create': the research revealed a distinct, also-promising direction — "
-    "spawn a new related 議案 (only when it genuinely differs).\n"
+    "{create_clause}"
     "- 'close': this 議案 is not viable for {region} (no support, wrong level of "
     "government, or contradicted by evidence) — retire it.\n"
     "Give a one-sentence rationale."
 )
+# The 'create' option, injected into UPDATE_DECISION_USER only when the active-G
+# cap leaves room to branch. Withheld (empty) once the cap is reached.
+CREATE_CLAUSE = (
+    "- 'create': the research revealed a distinct, also-promising direction — "
+    "spawn a new related 議案 (only when it genuinely differs).\n"
+)
 REWRITE_PROPOSAL_USER = (
-    "Current proposal:\n---\n{proposal}\n---\n\nIncorporate this research "
-    "summary and rewrite the FULL proposal Markdown, keeping it specific to "
-    "{region} and citing the new evidence:\n{summary}\n\n"
-    "After the Markdown, return a ```json object with \"title_en\" and "
-    "\"title_ja\"."
+    "Current proposal:\n---\n{proposal}\n---\n\n"
+    "Incorporate this research summary and rewrite the FULL proposal, keeping it "
+    "specific to {region} and citing the new evidence:\n{summary}\n\n"
+    "Follow the output format exactly."
 )
 
 # --- evaluator (UCB quality score for selection) ---
@@ -233,19 +267,16 @@ REFLECT_USER = (
 # --- write-up (final) ---
 WRITEUP_SYSTEM = (
     "You are an AI legislator producing the final, submission-ready 議案 for "
-    "{region} (level: {region_level}). Respond in {language}."
+    "{region} (level: {region_level}). It must read as a finished document that "
+    "could be tabled as written.\n\n"
+    "{proposal_format}\n\n"
+    "Respond in {language}."
 )
 WRITEUP_USER = (
-    "Current proposal and its Q&A/refinement history:\n{context}\n\n"
-    "Produce the final, polished proposal Markdown specific to {region}, with "
-    "sections: title (EN+JA), 本文, 提案理由, 出典. Reference any figures by their "
-    "assets/ path.\n\n"
-    "{citation_format}\n\n"
-    "If, after all research, the evidence base is still weak or key figures are "
-    "missing, additionally include a 検証計画 (Verification / Data-Collection "
-    "Plan) section stating exactly what data or experiment would close the gap "
-    "and how it would be obtained. Omit this section only if the evidence is "
-    "already solid."
+    "Current proposal and its Q&A / refinement history:\n{context}\n\n"
+    "Produce the final proposal for {region}. Answer the weaknesses parliament "
+    "raised, drop any claim the research never supported, and make 検証計画 "
+    "specific enough to act on. Follow the output format exactly."
 )
 
 # --- data agent ---

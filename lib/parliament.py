@@ -67,6 +67,7 @@ def run_parliament(cfg: Config, g: GNode, parl: ParliamentNode, *,
             q_user, client, model, q_system,
             image_paths=page_images or None, msg_history=history,
             temperature=spec.temperature, max_tokens=spec.max_tokens,
+            reasoning_effort=spec.reasoning_effort,
         )
         parl.record_raw(f"question_{r}", q_system, history, question)
 
